@@ -1,0 +1,33 @@
+#map-container
+{
+    height: 600px;
+    position: relative;
+    width: 100%;
+}
+
+#map
+{
+    height: 600px;
+    position: absolute;
+    width: 100%;
+    z-index: 0;
+}
+
+#search
+{
+    height: 32px;
+    left: 0;
+    margin-left: 120px;
+    padding: 0 1em;
+    position: absolute;
+    top: 0;
+    width: 500px;
+    z-index: 1;
+}
+
+.controls
+{
+    margin-top: 10px;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}

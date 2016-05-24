@@ -1,12 +1,5 @@
-html,
-body
-{
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
+@import 'base';
 
-#map
-{
-    height: 100%;
-}
+@import 'map';
+
+@import 'planner';
