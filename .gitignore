@@ -1,4 +1,9 @@
-public
+# Vim swap files
+*.swp
+
+# Build output folders for CSS and JS
+public/css
+public/js
 
 # Logs
 logs
