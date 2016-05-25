@@ -2,6 +2,7 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="public/css/style.min.css">
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script> 
 <script type="text/javascript" src="public/js/main.min.js"></script>
 </head>
 <body>
@@ -9,9 +10,12 @@
     <input id="search" class="controls" type="text" />
     <div id="map"></div>
 </div>
-<div id="plan-container">
-    <h1>Plan</h1>
-    <div id="current-map-selection">
+<div id="planner-container">
+    <div id="plan">
+        <h1>Plan</h1>
+    </div>
+    <div id="selection">
+        <h1>Selection</h1>
     </div>
 </div>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBm-W3Z_sdpUKMYz7iv8vxCFGAw5BRGKSE&v=3&libraries=places&callback=initMap" async defer></script>
