@@ -1,33 +1,72 @@
 #map-container
 {
-    height: 600px;
+    flex: 1;
     position: relative;
     width: 100%;
+    z-index: 0;
 }
 
 #map
 {
     height: 100%;
-    position: absolute;
     width: 100%;
-    z-index: 0;
 }
 
-#search
+.control
 {
     font-size: 14px;
-    height: 3em;
-    left: 0;
-    padding: 0 1em;
-    position: absolute;
-    top: 0;
-    width: 500px;
-    z-index: 1;
+    padding: 0 0 0 $shadow-blur-radius;
+    // Allow clicking through the div as it will otherwise cover the map.
+    pointer-events: none;
+
+    & > *
+    {
+        margin: 1em 1em 0 1em;
+        // Allow interactions with the inner elements.
+        pointer-events: all;
+    }
 }
 
-.controls
+#search-box
 {
-    margin: 1em;
-    border: 1px solid transparent;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    border: none;
+    box-shadow: 0 $shadow-offset $shadow-blur-radius rgba(0, 0, 0, 0.25);
+    box-sizing: padding-box;
+    height: 3em;
+    padding: 0 1em;
+    width: 540px;
+}
+
+#selection-control
+{
+    height: 100%;
+}
+
+#selection
+{
+    box-sizing: padding-box;
+    background: #f9f9f9;
+    box-shadow: 0 $shadow-offset $shadow-blur-radius rgba(0, 0, 0, 0.25);
+    display: none;
+    font-size: 14px;
+    width: 540px;
+
+    & > button
+    {
+        margin: 2em;
+    }
+}
+
+#selection-photo
+{
+    background-color: #f4f4f4;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 360px;
+    overflow: hidden;
+}
+
+#selection-info
+{
+    padding: 2em;
 }
