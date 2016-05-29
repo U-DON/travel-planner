@@ -5,11 +5,11 @@ const url = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBm-W3Z_sdpUKMYz7i
 @Injectable()
 export class MapService {
 
-    // Use Promise to kick off the callback when the Google Maps API is ready.
+    // Use Promise to trigger the real callback when the Google Maps API is ready.
     // http://stackoverflow.com/a/34933503/1070621
     initApi () {
-        return new Promise(function (resolve) {
-            window["_onApiLoaded"] = function (e: any) {
+        return new Promise((resolve, reject) => {
+            window["_onApiLoaded"] = (e: any) => {
                 resolve();
             }
 
