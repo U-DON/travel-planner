@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild, ElementRef, NgZone } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, NgZone, ViewChild } from "@angular/core";
 
 import { MapService } from "../services/map.service";
 import { SelectionComponent } from "./selection.component";
@@ -14,6 +14,8 @@ export class PlaceInfo {
     types: string[];
     website: string;
 
+    geometry: google.maps.places.PlaceGeometry;
+
     constructor (place: google.maps.places.PlaceResult) {
         this.name = place.name;
         this.address = place.formatted_address;
@@ -23,15 +25,18 @@ export class PlaceInfo {
         this.rating = place.rating;
         this.types = place.types;
         this.website = place.website;
+
+        this.geometry = place.geometry;
     }
 
     photoUrl (): string {
-        let photoUrl: string = "";
+        let photoUrl: string = "none";
 
-        if (this.photos) {
+        if (this.photos && this.photos.length > 0) {
             let photo = this.photos[0];
 
             // Scale photo according to its dimensions.
+            // TODO: Increase size of smaller images;
             if (photo.width > photo.height) {
                 photoUrl = photo.getUrl({ maxHeight: 360 });
             } else {
@@ -94,6 +99,9 @@ export class MapComponent implements AfterViewInit {
     initMap () {
         console.log("Yay, map loaded!");
 
+        // Upon getting the callback from Google Maps API,
+        // set up the map and controls and their listeners.
+
         let mapOptions: google.maps.MapOptions = {
             center: new google.maps.LatLng(37.09024, -95.712891),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -111,6 +119,7 @@ export class MapComponent implements AfterViewInit {
         this.searchBox = new google.maps.places.SearchBox(this.searchInput.nativeElement);
         this.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.searchControl.nativeElement);
 
+        // Clear search focus, close selections, etc. when clicking on the map.
         this.map.addListener("click", () => {
             this.searchInput.nativeElement.blur();
             this._zone.run(() => {
@@ -122,12 +131,16 @@ export class MapComponent implements AfterViewInit {
     }
 
     clearMarkers () {
+        // Clear current selection.
+        this._zone.run(() => {
+            this.selection = null;
+        });
+
         // Clear out the old markers.
         this.markers.forEach((marker: google.maps.Marker) => {
             marker.setMap(null);
         });
         this.markers = [];
-
     }
 
     createMarker (place: google.maps.places.PlaceResult) {
@@ -138,6 +151,7 @@ export class MapComponent implements AfterViewInit {
 
         marker.addListener("click", () => {
             this.searchInput.nativeElement.blur();
+            this.map.panTo(place.geometry.location);
             this._zone.run(() => {
                 this.selection = new PlaceInfo(place);
             });
@@ -149,9 +163,6 @@ export class MapComponent implements AfterViewInit {
     }
 
     onPlacesChanged () {
-        // Clear current selection.
-        this.selection = null;
-
         let places: google.maps.places.PlaceResult[] = this.searchBox.getPlaces();
 
         if (places.length == 0) {
@@ -160,12 +171,13 @@ export class MapComponent implements AfterViewInit {
 
         this.clearMarkers();
 
-        // For each place, get the icon, name and location.
         var bounds = new google.maps.LatLngBounds();
+
         places.forEach((place: google.maps.places.PlaceResult) => {
             // Create a marker for each place.
             this.createMarker(place);
 
+            // Accommodate this place in the current map view.
             if (place.geometry.viewport) {
                 // Only geocodes have viewport.
                 bounds.union(place.geometry.viewport);
@@ -185,4 +197,3 @@ export class MapComponent implements AfterViewInit {
     }
 
 }
-
