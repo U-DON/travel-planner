@@ -1,10 +1,17 @@
-import { AfterViewInit, Component, ElementRef, NgZone, ViewChild } from "@angular/core";
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    NgZone,
+    ViewChild
+} from "@angular/core";
 
 import { MapService } from "../services/map.service";
 import { SelectionComponent } from "./selection.component";
 
 export class PlaceInfo {
 
+    placeId: string;
     name: string;
     address: string;
     phoneNumber: string;
@@ -17,6 +24,7 @@ export class PlaceInfo {
     geometry: google.maps.places.PlaceGeometry;
 
     constructor (place: google.maps.places.PlaceResult) {
+        this.placeId = place.place_id;
         this.name = place.name;
         this.address = place.formatted_address;
         this.phoneNumber = place.formatted_phone_number;
@@ -87,7 +95,9 @@ export class MapComponent implements AfterViewInit {
     searchBox: google.maps.places.SearchBox;
     selection: PlaceInfo;
 
-    constructor (private _mapService: MapService, private _zone: NgZone) {
+    constructor (private _zone: NgZone,
+                 private _mapService: MapService)
+    {
     }
 
     ngAfterViewInit () {
