@@ -1,11 +1,23 @@
-import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, ViewChild } from "@angular/core";
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    Inject,
+    Input,
+    OnChanges,
+    ViewChild
+} from "@angular/core";
 
 import { PlannerService } from "../services/planner.service";
 
 import { Plan } from "./planner.component";
 
+import { PlaceInfo } from "./map.component";
+
 @Component({
     selector: "selection",
+    changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <div id="selection">
             <div #photo id="selection-photo" [ngStyle]="{'background-image': place.photoUrl()}">
@@ -28,7 +40,7 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
     @Input() map: any;
 
     // TODO: Change to proper type...
-    @Input() place: google.maps.places.PlaceResult;
+    @Input() place: PlaceInfo;
 
     @ViewChild("photo") photo: ElementRef;
 
@@ -115,7 +127,7 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
 
     addPlan () {
         console.log("SelectionComponent.addPlan");
-        this._plannerService.addPlan(this.place);
+        this._plannerService.addPlan(new Plan(this.place));
     }
 
 }
