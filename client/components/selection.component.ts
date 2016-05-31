@@ -1,5 +1,9 @@
 import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, ViewChild } from "@angular/core";
 
+import { PlannerService } from "../services/planner.service";
+
+import { Plan } from "./planner.component";
+
 @Component({
     selector: "selection",
     template: `
@@ -15,14 +19,17 @@ import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, ViewChi
                 <p>{{ place.rating }}</p>
                 <p>{{ place.website }}</p>
             </div>
-            <button type="button">Add To Plan</button>
+            <button (click)="addPlan()" type="button">Add To Plan</button>
         </div>
     `
 })
 export class SelectionComponent implements AfterViewInit, OnChanges {
 
     @Input() map: any;
+
+    // TODO: Change to proper type...
     @Input() place: google.maps.places.PlaceResult;
+
     @ViewChild("photo") photo: ElementRef;
 
     loading: boolean = false;
@@ -31,7 +38,9 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
     // Create a native element to allow Google Maps to add it to its controls.
     nativeElement: HTMLUnknownElement;
 
-    constructor (@Inject(ElementRef) elementRef: ElementRef) {
+    constructor (private _plannerService: PlannerService,
+                 @Inject(ElementRef) elementRef: ElementRef)
+    {
         this.nativeElement = elementRef.nativeElement;
     }
 
@@ -78,7 +87,8 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
     }
 
     handleStreetViewPanoramaData (result: google.maps.StreetViewPanoramaData,
-                                  status: google.maps.StreetViewStatus) {
+                                  status: google.maps.StreetViewStatus)
+    {
         // Get the corrected POV for the StreetView used in lieu of photos for place image.
         // http://stackoverflow.com/a/8381895/1070621
         if (status === google.maps.StreetViewStatus.OK) {
@@ -102,5 +112,10 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
             // Show default background (based on type of place).
         }
     };
+
+    addPlan () {
+        console.log("SelectionComponent.addPlan");
+        this._plannerService.addPlan(this.place);
+    }
 
 }

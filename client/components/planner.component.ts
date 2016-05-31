@@ -1,4 +1,13 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
+
+import { PlannerService } from "../services/planner.service";
+
+export class Plan {
+
+    constructor () {
+    }
+
+}
 
 @Component({
     selector: "planner",
@@ -16,8 +25,35 @@ import { Component } from "@angular/core";
     template: `
         <div id="plan">
             <h1>Plan</h1>
+            <ul>
+                <li *ngFor="let plan of plans">
+                    <h2>{{ plan.name }}</h2>
+                    <p>{{ plan.address }}</p>
+                    <p>{{ plan.phoneNumber }}</p>
+                    <p>{{ "$".repeat(plan.priceLevel) }}</p>
+                    <p>{{ plan.rating }}</p>
+                    <p>{{ plan.website }}</p>
+                </li>
+            </ul>
         </div>
     `
 })
-export class PlannerComponent {
+export class PlannerComponent implements OnDestroy {
+
+    plans: Plan[] = [];
+
+    private _planAddedSubscription: any;
+
+    constructor (private _plannerService: PlannerService) {
+        this._planAddedSubscription =
+            this._plannerService.planAdded.subscribe((plan: Plan) => {
+                console.log("PlannerComponent adding plan");
+                this.plans.push(plan);
+            });
+    }
+
+    ngOnDestroy () {
+        this._planAddedSubscription.unsubscribe();
+    }
+
 }
