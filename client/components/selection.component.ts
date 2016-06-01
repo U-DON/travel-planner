@@ -3,7 +3,6 @@ import {
     ChangeDetectionStrategy,
     Component,
     ElementRef,
-    Inject,
     Input,
     OnChanges,
     ViewChild
@@ -39,7 +38,6 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
 
     @Input() map: any;
 
-    // TODO: Change to proper type...
     @Input() place: PlaceInfo;
 
     @ViewChild("photo") photo: ElementRef;
@@ -51,7 +49,7 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
     nativeElement: HTMLUnknownElement;
 
     constructor (private _plannerService: PlannerService,
-                 @Inject(ElementRef) elementRef: ElementRef)
+                 elementRef: ElementRef)
     {
         this.nativeElement = elementRef.nativeElement;
     }
