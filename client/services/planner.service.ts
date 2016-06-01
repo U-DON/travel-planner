@@ -12,11 +12,16 @@ export class PlannerService {
     // http://stackoverflow.com/a/34722345/1070621
     // https://angular.io/docs/ts/latest/cookbook/component-communication.html#!#bidirectional-service
     planAdded = new EventEmitter<Plan>();
-    // planRemoved = new EventEmitter<Plan>();
+    planRemoved = new EventEmitter<Plan>();
 
     addPlan (plan: Plan) {
         console.log("PlannerService.addPlan");
         this.planAdded.emit(plan);
+    }
+
+    removePlan (plan: Plan) {
+        console.log("PlannerService.removePlan");
+        this.planRemoved.emit(plan);
     }
 
 }

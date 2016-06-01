@@ -15,9 +15,15 @@ import { PlaceInfo } from "./map.component";
 export class Plan {
 
     place: PlaceInfo;
+    description: string;
+    comments: string[];
+    votes: number;
 
     constructor (place: PlaceInfo) {
         this.place = place;
+        this.description = "";
+        this.comments = [];
+        this.votes = 0;
     }
 
 }
@@ -26,7 +32,8 @@ export class Plan {
 // https://github.com/angular/angular/issues/2246
 @Pipe({
     name: "mapValues",
-    pure: false })
+    pure: false
+})
 export class MapValuesPipe implements PipeTransform {
     transform (map: Map<any, any>, args?: any[]): Object[] {
         let array = Array.from(map.values());
@@ -51,6 +58,7 @@ export class MapValuesPipe implements PipeTransform {
         }
     `],
     template: `
+        <div id="logo">Travelogue</div>
         <div id="plan">
             <h1>Plan</h1>
             <ul>
@@ -61,7 +69,7 @@ export class MapValuesPipe implements PipeTransform {
                     <p>{{ "$".repeat(plan.place.priceLevel) }}</p>
                     <p>{{ plan.place.rating }}</p>
                     <p>{{ plan.place.website }}</p>
-                    <button (click)="removePlan(plan)" type="button">Remove Plan</button>
+                    <button (click)="_plannerService.removePlan(plan)" type="button">Remove Plan</button>
                 </li>
             </ul>
         </div>
@@ -72,6 +80,7 @@ export class PlannerComponent implements OnDestroy {
     plans: Map<string, Plan> = new Map<string, Plan>();
 
     private _planAddedSubscription: any;
+    private _planRemovedSubscription: any;
 
     constructor (private _changeDetector: ChangeDetectorRef,
                  private _plannerService: PlannerService)
@@ -86,10 +95,18 @@ export class PlannerComponent implements OnDestroy {
                     this._changeDetector.markForCheck();
                 }
             });
+
+        this._planRemovedSubscription =
+            this._plannerService.planRemoved.subscribe((plan: Plan) => {
+                if (this.removePlan(plan)) {
+                    this._changeDetector.markForCheck();
+                }
+            });
     }
 
     ngOnDestroy () {
         this._planAddedSubscription.unsubscribe();
+        this._planRemovedSubscription.unsubscribe();
     }
 
     addPlan (plan: Plan): boolean {
@@ -102,8 +119,8 @@ export class PlannerComponent implements OnDestroy {
         return false;
     }
 
-    removePlan (plan: Plan) {
-        this.plans.delete(plan.place.placeId);
+    removePlan (plan: Plan): boolean {
+        return this.plans.delete(plan.place.placeId);
     }
 
 }
