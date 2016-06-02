@@ -351,7 +351,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     createPlaceMarker (place: google.maps.places.PlaceResult) {
-        let marker = this.createMarker(MapMarkerIcon.MARKER, new Plan(new PlaceInfo(place)));
+        // If this place already has a plan, connect it with the existing plan.
+        let planMarker = this.planMarkers.get(place.place_id);
+        let plan: Plan;
+
+        if (planMarker) {
+            plan = planMarker.get("plan");
+        } else {
+            plan = new Plan(new PlaceInfo(place));
+        }
+
+        let marker = this.createMarker(MapMarkerIcon.MARKER, plan);
         this.placeMarkers.push(marker);
         return marker;
     }
@@ -392,7 +402,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         });
 
         // Automatically show the place info if the search returned only one result.
-        // TODO: If this place already has a plan, grab the existing instance.
         if (this.placeMarkers.length === 1) {
             this.selectMarker(this.placeMarkers[0]);
         }
