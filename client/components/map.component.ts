@@ -12,25 +12,53 @@ import { Plan } from "./planner.component";
 import { MapService } from "../services/map.service";
 import { SelectionComponent } from "./selection.component";
 
+const enum MapMarkerType {
+    PLACE,
+    PLAN
+}
+
+interface MapMarkerIcon {
+    fillColor: string;
+    fillOpacity: number;
+    markerType: MapMarkerType;
+    opacity: number;
+    path: string;
+    rotation: number;
+    scale: number;
+    strokeColor: string;
+    strokeOpacity: number;
+    strokeWeight: number;
+    width: number;
+    zIndex: number;
+}
+
 namespace MapMarkerIcon {
 
-    export const MARKER = {
+    export const MARKER: MapMarkerIcon = {
+        fillColor: "#82ffeb",
+        fillOpacity: 1,
+        markerType: MapMarkerType.PLACE,
+        opacity: 0.7,
         path: `
             M768 896q0 106 -75 181t-181 75t-181 -75t-75 -181t75 -181t181
             -75t181 75t75 181zM1024 896q0 -109 -33 -179l-364 -774q-16 -33 -47.5
             -52t-67.5 -19t-67.5 19t-46.5 52l-365 774q-33 70 -33 179q0 212 150
             362t362 150t362 -150t150 -362z
         `,
-        fillColor: "#82ffeb",
-        fillOpacity: 1,
         rotation: 180,
         scale: 0.02,
         strokeColor: "black",
         strokeOpacity: 0.5,
-        strokeWeight: 1
+        strokeWeight: 1,
+        width: 1024,
+        zIndex: 1
     };
 
-    export const STAR = {
+    export const STAR: MapMarkerIcon = {
+        fillColor: "#ff9c50",
+        fillOpacity: 1,
+        markerType: MapMarkerType.PLAN,
+        opacity: 0.7,
         path: `
             M1664 889q0 -22 -26 -48l-363 -354l86 -500q1 -7 1 -20q0 -21 -10.5
             -35.5t-30.5 -14.5q-19 0 -40 12l-449 236l-449 -236q-22 -12 -40
@@ -38,13 +66,13 @@ namespace MapMarkerIcon {
             48q0 37 56 46l502 73l225 455q19 41 49 41t49 -41l225 -455 l502
             -73q56 -9 56 -46z
         `,
-        fillColor: "#ff9c50",
-        fillOpacity: 1,
         rotation: 180,
         scale: 0.02,
         strokeColor: "black",
         strokeOpacity: 0.5,
-        strokeWeight: 1
+        strokeWeight: 1,
+        width: 1664,
+        zIndex: 100
     };
 
 }
@@ -202,7 +230,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.searchBox.addListener("places_changed", this.onPlacesChanged.bind(this));
     }
 
-    clearMarkers () {
+    clearPlaceMarkers () {
         // Clear current selection.
         this._zone.run(() => {
             this.selection = null;
@@ -215,57 +243,67 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.placeMarkers = [];
     }
 
-    createPlaceMarker (place: google.maps.places.PlaceResult) {
+    createMarker(icon: MapMarkerIcon, plan: Plan): google.maps.Marker {
+        let position = plan.place.geometry.location;
+        let animation = (icon.markerType === MapMarkerType.PLAN)
+                      ? google.maps.Animation.DROP
+                      : null;
+
         // Correct the position of the icon.
         // http://stackoverflow.com/a/32483737/1070621
         let marker = new google.maps.Marker({
+            animation: animation,
             icon: Object.assign({
-                    anchor: new google.maps.Point(512, 0)
-                }, MapMarkerIcon.MARKER),
+                    anchor: new google.maps.Point(icon.width/2, 0)
+                }, icon),
             map: this.map,
-            opacity: 0.7,
-            position: place.geometry.location,
-            zIndex: 1
-        })
+            opacity: icon.opacity,
+            position: position,
+            zIndex: icon.zIndex
+        });
 
         marker.addListener("click", () => {
             this.searchInput.nativeElement.blur();
-            this.map.panTo(place.geometry.location);
+            this.map.panTo(position);
             this._zone.run(() => {
-                this.selection = new Plan(new PlaceInfo(place));
+                this.selection = plan;
             });
         });
 
         // Use another marker to indicate interaction with the main marker.
-        let tempMarker: google.maps.Marker;
+        let focusMarker: google.maps.Marker;
 
         marker.addListener("mouseover", () => {
             marker.setOpacity(1);
             marker.setZIndex(1000);
-            tempMarker = new google.maps.Marker({
+            focusMarker = new google.maps.Marker({
                 icon: {
                     anchor: new google.maps.Point(0, 0.5),
-                    path: google.maps.SymbolPath.CIRCLE,
                     fillColor: "transparent",
+                    path: google.maps.SymbolPath.CIRCLE,
                     strokeColor: "#ffffff",
                     strokeOpacity: 1,
                     strokeWeight: 2,
                     scale: 25
                 },
                 map: this.map,
-                position: place.geometry.location,
+                position: position,
                 zIndex: 999
             });
         });
 
         marker.addListener("mouseout", () => {
-            marker.setOpacity(0.7);
-            marker.setZIndex(100);
-            tempMarker.setMap(null);
+            marker.setOpacity(icon.opacity);
+            marker.setZIndex(icon.zIndex);
+            focusMarker.setMap(null);
         });
 
-        this.placeMarkers.push(marker);
+        return marker;
+    }
 
+    createPlaceMarker (place: google.maps.places.PlaceResult) {
+        let marker = this.createMarker(MapMarkerIcon.MARKER, new Plan(new PlaceInfo(place)));
+        this.placeMarkers.push(marker);
         return marker;
     }
 
@@ -273,59 +311,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (this.planMarkers.has(plan.place.placeId))
             return;
 
-        let marker = new google.maps.Marker({
-            animation: google.maps.Animation.DROP,
-            // Correct the position of the icon.
-            // http://stackoverflow.com/a/32483737/1070621
-            icon: Object.assign({
-                    anchor: new google.maps.Point(832, 0)
-                }, MapMarkerIcon.STAR),
-            map: this.map,
-            opacity: 0.7,
-            position: plan.place.geometry.location,
-            zIndex: 100
-        });
-
-        // Use another marker to indicate interaction with the main marker.
-        let tempMarker: google.maps.Marker;
-
-        marker.addListener("click", () => {
-            this.searchInput.nativeElement.blur();
-            this.map.panTo(plan.place.geometry.location);
-            this._zone.run(() => {
-                this.selection = plan;
-            });
-        });
-
-        marker.addListener("mouseover", () => {
-            marker.setOpacity(1);
-            marker.setZIndex(1000);
-            tempMarker = new google.maps.Marker({
-                icon: {
-                    anchor: new google.maps.Point(0, 0.5),
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: "transparent",
-                    strokeColor: "#ffffff",
-                    strokeOpacity: 1,
-                    strokeWeight: 2,
-                    scale: 25
-                },
-                map: this.map,
-                position: plan.place.geometry.location,
-                zIndex: 999
-            });
-        });
-
-        marker.addListener("mouseout", () => {
-            marker.setOpacity(0.7);
-            marker.setZIndex(100);
-            tempMarker.setMap(null);
-        });
-
+        let marker = this.createMarker(MapMarkerIcon.STAR, plan);
         this.planMarkers.set(plan.place.placeId, marker);
-
         return marker;
-
     }
 
     onPlacesChanged () {
@@ -335,7 +323,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             return;
         }
 
-        this.clearMarkers();
+        this.clearPlaceMarkers();
 
         var bounds = new google.maps.LatLngBounds();
 
