@@ -10,7 +10,7 @@ import {
 
 import { PlannerService } from "../services/planner.service";
 
-import { Plan } from "./planner.component";
+import { Plan, PlanStatus } from "./planner.component";
 
 import { PlaceInfo } from "./map.component";
 
@@ -19,26 +19,25 @@ import { PlaceInfo } from "./map.component";
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <div id="selection">
-            <div #photo id="selection-photo" [ngStyle]="{'background-image': place.photoUrl()}">
+            <div #photo id="selection-photo" [ngStyle]="{'background-image': plan.place.photoUrl()}">
                 <div *ngIf="loading"></div>
             </div>
             <div id="selection-info">
-                <h2>{{ place.name }}</h2>
-                <p>{{ place.address }}</p>
-                <p>{{ place.phoneNumber }}</p>
-                <p>{{ "$".repeat(place.priceLevel) }}</p>
-                <p>{{ place.rating }}</p>
-                <p>{{ place.website }}</p>
+                <h2>{{ plan.place.name }}</h2>
+                <p>{{ plan.place.address }}</p>
+                <p>{{ plan.place.phoneNumber }}</p>
+                <p>{{ "$".repeat(plan.place.priceLevel) }}</p>
+                <p>{{ plan.place.rating }}</p>
+                <p>{{ plan.place.website }}</p>
             </div>
-            <button (click)="addPlan()" type="button">Add To Plan</button>
+            <button (click)="changePlanStatus()" type="button">{{ plan.status ? 'Remove From Plan' : 'Add To Plan' }}</button>
         </div>
     `
 })
 export class SelectionComponent implements AfterViewInit, OnChanges {
 
     @Input() map: any;
-
-    @Input() place: PlaceInfo;
+    @Input() plan: Plan;
 
     @ViewChild("photo") photo: ElementRef;
 
@@ -56,7 +55,7 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
 
     ngAfterViewInit () {
         console.log("SelectionComponent ngAfterViewInit");
-        console.log("Place Types: " + this.place.types);
+        console.log("Place Types: " + this.plan.place.types);
 
         this.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.nativeElement);
 
@@ -79,9 +78,9 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
             return;
 
         // TODO: Loading animation while processing the panorama.
-        if (!this.place.photos || this.place.photos.length === 0) {
+        if (!this.plan.place.photos || this.plan.place.photos.length === 0) {
             let panoramaRequest = {
-                location: this.place.geometry.location,
+                location: this.plan.place.geometry.location,
 
                 // NOTE: StreetViewSource requires a manual change
                 //       to the Google Maps type definitions file.
@@ -105,7 +104,7 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
             let heading =
                 google.maps.geometry.spherical.computeHeading(
                     result.location.latLng,
-                    this.place.geometry.location
+                    this.plan.place.geometry.location
                 );
 
             this.panorama.setOptions({
@@ -123,9 +122,12 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
         }
     };
 
-    addPlan () {
-        console.log("SelectionComponent.addPlan");
-        this._plannerService.addPlan(new Plan(this.place));
+    changePlanStatus () {
+        if (this.plan.status === PlanStatus.NOT_INTERESTED) {
+            this._plannerService.addPlan(this.plan);
+        } else {
+            this._plannerService.removePlan(this.plan);
+        }
     }
 
 }

@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from "@angular/core";
 
 import { Subject } from "rxjs/Subject";
 
-import { Plan } from "../components/planner.component";
+import { Plan, PlanStatus } from "../components/planner.component";
 
 @Injectable()
 export class PlannerService {
@@ -16,11 +16,13 @@ export class PlannerService {
 
     addPlan (plan: Plan) {
         console.log("PlannerService.addPlan");
+        plan.status = PlanStatus.INTERESTED;
         this.planAdded.emit(plan);
     }
 
     removePlan (plan: Plan) {
         console.log("PlannerService.removePlan");
+        plan.status = PlanStatus.NOT_INTERESTED;
         this.planRemoved.emit(plan);
     }
 

@@ -118,14 +118,14 @@ export class PlaceInfo {
         <selection
             *ngIf="selection"
             [map]="map"
-            [place]="selection"
+            [plan]="selection"
             class="control"
         >
         </selection>
         <div id="map"></div>
     `
 })
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements AfterViewInit, OnDestroy {
 
     @ViewChild("searchControl") searchControl: ElementRef;
     @ViewChild("searchBox") searchInput: ElementRef;
@@ -137,7 +137,7 @@ export class MapComponent implements AfterViewInit {
     markers: google.maps.Marker[] = [];
     planMarkers: Map<string, google.maps.Marker> = new Map<string, google.maps.Marker>();
     searchBox: google.maps.places.SearchBox;
-    selection: PlaceInfo;
+    selection: Plan;
 
     constructor (private _zone: NgZone,
                  private _mapService: MapService,
@@ -164,6 +164,7 @@ export class MapComponent implements AfterViewInit {
     }
 
     ngOnDestroy () {
+        this._planAddedSubscription.unsubscribe();
         this._planRemovedSubscription.unsubscribe();
     }
 
@@ -231,7 +232,7 @@ export class MapComponent implements AfterViewInit {
             this.searchInput.nativeElement.blur();
             this.map.panTo(place.geometry.location);
             this._zone.run(() => {
-                this.selection = new PlaceInfo(place);
+                this.selection = new Plan(new PlaceInfo(place));
             });
         });
 
@@ -269,7 +270,7 @@ export class MapComponent implements AfterViewInit {
     }
 
     createPlanMarker (plan: Plan) {
-        if (this.planMarkers.has(planplace.placeId))
+        if (this.planMarkers.has(plan.place.placeId))
             return;
 
         let marker = new google.maps.Marker({
@@ -292,7 +293,7 @@ export class MapComponent implements AfterViewInit {
             this.searchInput.nativeElement.blur();
             this.map.panTo(plan.place.geometry.location);
             this._zone.run(() => {
-                this.selection = plan.place;
+                this.selection = plan;
             });
         });
 
@@ -353,7 +354,7 @@ export class MapComponent implements AfterViewInit {
             // Automatically show the place info if the search returned only one result.
             if (places.length === 1) {
                 this._zone.run(() => {
-                    this.selection = new PlaceInfo(place);
+                    this.selection = new Plan(new PlaceInfo(place));
                 });
             }
         });

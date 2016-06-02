@@ -12,15 +12,29 @@ import { PlannerService } from "../services/planner.service";
 
 import { PlaceInfo } from "./map.component";
 
+export const enum PlanStatus {
+    NOT_INTERESTED,
+    NOT_GOING,
+    INTERESTED,
+    GOING
+}
+
 export class Plan {
 
     place: PlaceInfo;
+    status: PlanStatus;
     description: string;
     comments: string[];
-    votes: number;
+    votes: number
 
-    constructor (place: PlaceInfo) {
+    constructor (place: PlaceInfo,
+                 status?: PlanStatus,
+                 description?: string,
+                 comments?: string[],
+                 votes?: number)
+    {
         this.place = place;
+        this.status = PlanStatus.NOT_INTERESTED;
         this.description = "";
         this.comments = [];
         this.votes = 0;
