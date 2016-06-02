@@ -224,7 +224,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.searchBox = new google.maps.places.SearchBox(this.searchInput.nativeElement);
         this.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.searchControl.nativeElement);
 
-        // Clear search focus, close selections, etc. when clicking on the map.
+        // Clear search focus, close selection, etc. when clicking on the map.
         this.map.addListener("click", () => {
             this.selectMarker(null);
         });
@@ -233,13 +233,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     clearPlaceMarkers () {
-        // Clear current selection.
-        this._zone.run(() => {
-            this.selection = null;
-        });
-
         // Clear out the old place markers.
+        // If one is currently selected, clear the selection as well.
         this.placeMarkers.forEach((marker: google.maps.Marker) => {
+            if (marker === this.selectedMarker) {
+                this.selectMarker(null);
+            }
+
             marker.setMap(null);
         });
         this.placeMarkers = [];
@@ -247,6 +247,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     createMarker(icon: MapMarkerIcon, plan: Plan): google.maps.Marker {
         let position = plan.place.geometry.location;
+
+        console.log("Creating marker: " + position.toString() + " (string); " + position.toUrlValue() + " (URL value)");
+
         let animation = (icon.markerType === MapMarkerType.PLAN)
                       ? google.maps.Animation.DROP
                       : null;
@@ -265,28 +268,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             zIndex: icon.zIndex
         });
 
+        // Set custom properties and event listeners on marker.
+        //
+        // Link marker to its corresponding plan to for easy access.
+        //
+        // Combine event listeners and a custom 'focused' property
+        // to control marker's behavior when clicked or hovered.
+
         marker.set("plan", plan);
         marker.set("focused", false);
-
-        // Use another marker to indicate interaction with the main marker.
-        let focusMarker = new google.maps.Marker({
-            icon: {
-                anchor: new google.maps.Point(0, 0.5),
-                fillColor: "transparent",
-                path: google.maps.SymbolPath.CIRCLE,
-                strokeColor: "#ffffff",
-                strokeOpacity: 1,
-                strokeWeight: 2,
-                scale: 25
-            },
-            map: this.map,
-            position: position,
-            visible: false,
-            zIndex: 999
-        });
-
-        // Bind focus marker's visibility to main marker's focused property.
-        focusMarker.bindTo("visible", marker, "focused");
 
         marker.addListener("click", () => {
             this.selectMarker(marker);
@@ -313,6 +303,30 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                 marker.setOpacity(icon.opacity);
             }
         });
+
+        // Use another marker to indicate selection or focus of main marker.
+        let focusMarker = new google.maps.Marker({
+            icon: {
+                anchor: new google.maps.Point(0, 0.5),
+                fillColor: "transparent",
+                path: google.maps.SymbolPath.CIRCLE,
+                strokeColor: "#ffffff",
+                strokeOpacity: 1,
+                strokeWeight: 2,
+                scale: 25
+            },
+            map: this.map,
+            position: position,
+            visible: false,
+            zIndex: 999
+        });
+
+        // Bind focus marker's map property to main marker's so when the main
+        // marker gets discarded, they both get discarded.
+        focusMarker.bindTo("map", marker, "map");
+
+        // Only display the focus marker when the main marker has focus.
+        focusMarker.bindTo("visible", marker, "focused");
 
         return marker;
     }
@@ -349,7 +363,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         let marker = this.createMarker(MapMarkerIcon.STAR, plan);
         this.planMarkers.set(plan.place.placeId, marker);
 
-        google.maps.event.trigger(marker, "click");
+        this.selectMarker(marker);
 
         return marker;
     }
@@ -375,15 +389,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             } else {
                 bounds.extend(place.geometry.location);
             }
-
-            // Automatically show the place info if the search returned only one result.
-            // TODO: If this place already has a plan, grab the existing instance.
-            if (places.length === 1) {
-                this._zone.run(() => {
-                    this.selection = new Plan(new PlaceInfo(place));
-                });
-            }
         });
+
+        // Automatically show the place info if the search returned only one result.
+        // TODO: If this place already has a plan, grab the existing instance.
+        if (this.placeMarkers.length === 1) {
+            this.selectMarker(this.placeMarkers[0]);
+        }
 
         this.map.fitBounds(bounds);
     }
