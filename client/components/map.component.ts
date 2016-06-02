@@ -22,12 +22,16 @@ interface MapMarkerIcon {
     fillOpacity: number;
     markerType: MapMarkerType;
     opacity: number;
+    // SVG rendering of icon image represented by a path.
+    // Paths are copied from the SVGs of Font Awesome's icons.
     path: string;
     rotation: number;
     scale: number;
     strokeColor: string;
     strokeOpacity: number;
     strokeWeight: number;
+    // Width of SVG, which was determined separately and hard-coded.
+    // This is used to re-center the icon over the map location.
     width: number;
     zIndex: number;
 }
@@ -165,6 +169,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     placeMarkers: google.maps.Marker[] = [];
     planMarkers: Map<string, google.maps.Marker> = new Map<string, google.maps.Marker>();
     searchBox: google.maps.places.SearchBox;
+    selectedMarker: google.maps.Marker;
     selection: Plan;
 
     constructor (private _zone: NgZone,
@@ -221,10 +226,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
         // Clear search focus, close selections, etc. when clicking on the map.
         this.map.addListener("click", () => {
-            this.searchInput.nativeElement.blur();
-            this._zone.run(() => {
-                this.selection = null;
-            });
+            this.selectMarker(null);
         });
 
         this.searchBox.addListener("places_changed", this.onPlacesChanged.bind(this));
@@ -249,7 +251,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                       ? google.maps.Animation.DROP
                       : null;
 
-        // Correct the position of the icon.
+        // Set an anchor calculated from icon's width to correct its position.
+        // Moving it horizontally by half its width should center it.
         // http://stackoverflow.com/a/32483737/1070621
         let marker = new google.maps.Marker({
             animation: animation,
@@ -262,43 +265,75 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             zIndex: icon.zIndex
         });
 
-        marker.addListener("click", () => {
-            this.searchInput.nativeElement.blur();
-            this.map.panTo(position);
-            this._zone.run(() => {
-                this.selection = plan;
-            });
-        });
+        marker.set("plan", plan);
+        marker.set("focused", false);
 
         // Use another marker to indicate interaction with the main marker.
-        let focusMarker: google.maps.Marker;
+        let focusMarker = new google.maps.Marker({
+            icon: {
+                anchor: new google.maps.Point(0, 0.5),
+                fillColor: "transparent",
+                path: google.maps.SymbolPath.CIRCLE,
+                strokeColor: "#ffffff",
+                strokeOpacity: 1,
+                strokeWeight: 2,
+                scale: 25
+            },
+            map: this.map,
+            position: position,
+            visible: false,
+            zIndex: 999
+        });
+
+        // Bind focus marker's visibility to main marker's focused property.
+        focusMarker.bindTo("visible", marker, "focused");
+
+        marker.addListener("click", () => {
+            this.selectMarker(marker);
+        });
 
         marker.addListener("mouseover", () => {
-            marker.setOpacity(1);
-            marker.setZIndex(1000);
-            focusMarker = new google.maps.Marker({
-                icon: {
-                    anchor: new google.maps.Point(0, 0.5),
-                    fillColor: "transparent",
-                    path: google.maps.SymbolPath.CIRCLE,
-                    strokeColor: "#ffffff",
-                    strokeOpacity: 1,
-                    strokeWeight: 2,
-                    scale: 25
-                },
-                map: this.map,
-                position: position,
-                zIndex: 999
-            });
+            if (marker !== this.selectedMarker) {
+                marker.set("focused", true);
+            }
         });
 
         marker.addListener("mouseout", () => {
-            marker.setOpacity(icon.opacity);
-            marker.setZIndex(icon.zIndex);
-            focusMarker.setMap(null);
+            if (marker !== this.selectedMarker) {
+                marker.set("focused", false);
+            }
+        });
+
+        marker.addListener("focused_changed", () => {
+            if (marker.get("focused")) {
+                marker.setZIndex(1000);
+                marker.setOpacity(1);
+            } else {
+                marker.setZIndex(icon.zIndex);
+                marker.setOpacity(icon.opacity);
+            }
         });
 
         return marker;
+    }
+
+    selectMarker (marker: google.maps.Marker) {
+        this.searchInput.nativeElement.blur();
+
+        if (this.selectedMarker) {
+            this.selectedMarker.set("focused", false);
+        }
+
+        this.selectedMarker = marker;
+
+        if (marker) {
+            marker.set("focused", true);
+            this.map.panTo(marker.getPosition());
+        }
+
+        this._zone.run(() => {
+            this.selection = marker ? marker.get("plan") : null;
+        });
     }
 
     createPlaceMarker (place: google.maps.places.PlaceResult) {
@@ -313,6 +348,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
         let marker = this.createMarker(MapMarkerIcon.STAR, plan);
         this.planMarkers.set(plan.place.placeId, marker);
+
+        google.maps.event.trigger(marker, "click");
+
         return marker;
     }
 
@@ -325,21 +363,21 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
         this.clearPlaceMarkers();
 
-        var bounds = new google.maps.LatLngBounds();
+        let bounds = new google.maps.LatLngBounds();
 
         places.forEach((place: google.maps.places.PlaceResult) => {
-            // Create a marker for each place.
             this.createPlaceMarker(place);
 
             // Accommodate this place in the current map view.
+            // Only geocodes have viewport.
             if (place.geometry.viewport) {
-                // Only geocodes have viewport.
                 bounds.union(place.geometry.viewport);
             } else {
                 bounds.extend(place.geometry.location);
             }
 
             // Automatically show the place info if the search returned only one result.
+            // TODO: If this place already has a plan, grab the existing instance.
             if (places.length === 1) {
                 this._zone.run(() => {
                     this.selection = new Plan(new PlaceInfo(place));
