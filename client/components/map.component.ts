@@ -134,7 +134,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     private _planRemovedSubscription: any;
 
     map: google.maps.Map;
-    markers: google.maps.Marker[] = [];
+    placeMarkers: google.maps.Marker[] = [];
     planMarkers: Map<string, google.maps.Marker> = new Map<string, google.maps.Marker>();
     searchBox: google.maps.places.SearchBox;
     selection: Plan;
@@ -208,11 +208,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             this.selection = null;
         });
 
-        // Clear out the old markers.
-        this.markers.forEach((marker: google.maps.Marker) => {
+        // Clear out the old place markers.
+        this.placeMarkers.forEach((marker: google.maps.Marker) => {
             marker.setMap(null);
         });
-        this.markers = [];
+        this.placeMarkers = [];
     }
 
     createPlaceMarker (place: google.maps.places.PlaceResult) {
@@ -264,7 +264,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             tempMarker.setMap(null);
         });
 
-        this.markers.push(marker);
+        this.placeMarkers.push(marker);
 
         return marker;
     }
