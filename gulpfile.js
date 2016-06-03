@@ -64,4 +64,4 @@ gulp.task('watch', function () {
 
 });
 
-gulp.task('default', ['clean', 'css', 'ts', 'sync', 'watch']);
+gulp.task('default', ['clean', 'ts', 'css', 'sync', 'watch']);
