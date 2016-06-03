@@ -9,8 +9,7 @@ import {
 } from "@angular/core";
 
 import { Plan } from "./plan";
-
-import { PlanService } from "../services/plan.service";
+import { PlanService } from "./plan.service";
 
 // Angular currently doesn't support iterating over maps except with pipes.
 // https://github.com/angular/angular/issues/2246

@@ -7,12 +7,11 @@ import {
     ViewChild
 } from "@angular/core";
 
-import { PlanService } from "../services/plan.service";
-import { Plan, Place } from "./plan";
-import { MapService } from "../services/map.service";
-import { SelectionComponent } from "./selection.component";
-
+import { Place, Plan } from "../plan/plan";
+import { PlanService } from "../plan/plan.service";
+import { MapService } from "./map.service";
 import { MapMarker } from "./map-marker";
+import { SelectionComponent } from "./selection.component";
 
 @Component({
     selector: "map",

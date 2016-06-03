@@ -9,9 +9,8 @@ import {
     ViewChild
 } from "@angular/core";
 
-import { PlanService } from "../services/plan.service";
-
-import { Plan, PlanStatus } from "./plan";
+import { Plan, PlanStatus } from "../plan/plan";
+import { PlanService } from "../plan/plan.service";
 
 @Component({
     selector: "selection",

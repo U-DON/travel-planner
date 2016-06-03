@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
-import { PlannerComponent } from "./planner.component";
-import { MapComponent } from "./map.component";
+import { PlannerComponent } from "./plan/planner.component";
+import { MapComponent } from "./map/map.component";
 
 @Component({
     selector: "app",

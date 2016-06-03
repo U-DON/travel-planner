@@ -2,7 +2,7 @@
 
 import { bootstrap } from "@angular/platform-browser-dynamic";
 
-import { AppComponent } from "./components/app.component";
-import { PlanService } from "./services/plan.service";
+import { AppComponent } from "./app.component";
+import { PlanService } from "./plan/plan.service";
 
 bootstrap(AppComponent, [PlanService]);
