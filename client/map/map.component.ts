@@ -45,6 +45,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     @ViewChild("searchBox") searchInput: ElementRef;
 
     private _planAddedSubscription: any;
+    private _planSelectedSubscription: any;
     private _planRemovedSubscription: any;
 
     map: google.maps.Map;
@@ -64,6 +65,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this._planAddedSubscription =
             this._planService.planAdded.subscribe((plan: Plan) => {
                 this.createPlanMarker(plan);
+            });
+
+        this._planSelectedSubscription =
+            this._planService.planSelected.subscribe((plan: Plan) => {
+                let marker = this.planMarkers.get(plan.place.placeId);
+                if (marker !== this.selectedMarker) {
+                    this.selectMarker(marker);
+                }
             });
 
         this._planRemovedSubscription =

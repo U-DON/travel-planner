@@ -13,11 +13,17 @@ export class PlanService {
     // https://angular.io/docs/ts/latest/cookbook/component-communication.html#!#bidirectional-service
     planAdded = new EventEmitter<Plan>();
     planRemoved = new EventEmitter<Plan>();
+    planSelected = new EventEmitter<Plan>();
 
     addPlan (plan: Plan) {
         console.log("PlanService.addPlan");
         plan.status = PlanStatus.INTERESTED;
         this.planAdded.emit(plan);
+    }
+
+    selectPlan (plan: Plan) {
+        console.log("PlanService.selectPlan");
+        this.planSelected.emit(plan);
     }
 
     removePlan (plan: Plan) {

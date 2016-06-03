@@ -32,7 +32,10 @@ import { PlanService } from "./plan.service";
         <div id="logo">Travelogue</div>
         <div id="plan">
             <ul>
-                <li *ngFor="let plan of plans | mapValues; let i = index">
+                <li
+                    *ngFor="let plan of plans | mapValues; let i = index"
+                    (click)="_planService.selectPlan(plan)"
+                >
                     <h2>{{ plan.place.name }}</h2>
                     <p>{{ plan.place.address }}</p>
                     <p>{{ plan.place.phoneNumber }}</p>
