@@ -30,9 +30,11 @@ module.exports = {
 
     plugins: [
         new webpack.NoErrorsPlugin(),
-        new webpack.optimize.DedupePlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             name: ['app', 'vendor', 'polyfills']
         }),
+        new webpack.optimize.DedupePlugin(),
+        // new webpack.optimize.UglifyJsPlugin(),
+        // new webpack.optimize.OccurrenceOrderPlugin()
     ]
 };
