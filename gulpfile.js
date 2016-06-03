@@ -22,11 +22,18 @@ gulp.task('ts', function () {
         .pipe(browserSync.reload({stream: true}));
 });
 
+gulp.task('fonts', function () {
+    gulp.src(['assets/fonts/*', 'node_modules/font-awesome/fonts/*'])
+        .pipe(gulp.dest('public/fonts'));
+
+});
+
 gulp.task('css', function () {
-    gulp.src(['assets/css/**/*.scss'])
+    gulp.src(['assets/css/**/*.scss', 'node_modules/font-awesome/scss/*.scss'])
         .pipe(plumber())
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer('last 2 versions'))
+        .pipe(concat('style.css'))
         .pipe(cleanCss())
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest('public/css'))
@@ -64,4 +71,4 @@ gulp.task('watch', function () {
 
 });
 
-gulp.task('default', ['clean', 'ts', 'css', 'sync', 'watch']);
+gulp.task('default', ['clean', 'ts', 'css', 'fonts', 'sync', 'watch']);
