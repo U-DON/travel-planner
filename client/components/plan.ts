@@ -1,4 +1,4 @@
-export class PlaceInfo {
+export class Place {
 
     placeId: string;
     name: string;
@@ -57,13 +57,13 @@ export const enum PlanStatus {
 
 export class Plan {
 
-    place: PlaceInfo;
+    place: Place;
     status: PlanStatus;
     description: string;
     comments: string[];
     votes: number
 
-    constructor (place: PlaceInfo,
+    constructor (place: Place,
                  status?: PlanStatus,
                  description?: string,
                  comments?: string[],
