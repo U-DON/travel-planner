@@ -3,6 +3,6 @@
 import { bootstrap } from "@angular/platform-browser-dynamic";
 
 import { AppComponent } from "./components/app.component";
-import { PlannerService } from "./services/planner.service";
+import { PlanService } from "./services/plan.service";
 
-bootstrap(AppComponent, [PlannerService]);
+bootstrap(AppComponent, [PlanService]);

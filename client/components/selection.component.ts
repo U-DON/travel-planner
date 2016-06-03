@@ -9,7 +9,7 @@ import {
     ViewChild
 } from "@angular/core";
 
-import { PlannerService } from "../services/planner.service";
+import { PlanService } from "../services/plan.service";
 
 import { Plan, PlanStatus } from "./plan";
 
@@ -51,13 +51,13 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
     private _planRemovedSubscription: any;
 
     constructor (private _changeDetector: ChangeDetectorRef,
-                 private _plannerService: PlannerService,
+                 private _planService: PlanService,
                  elementRef: ElementRef)
     {
         this.nativeElement = elementRef.nativeElement;
 
         this._planRemovedSubscription =
-            this._plannerService.planRemoved.subscribe((plan: Plan) => {
+            this._planService.planRemoved.subscribe((plan: Plan) => {
                 this._changeDetector.markForCheck();
             });
     }
@@ -133,9 +133,9 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
 
     changePlanStatus () {
         if (this.plan.status === PlanStatus.NOT_INTERESTED) {
-            this._plannerService.addPlan(this.plan);
+            this._planService.addPlan(this.plan);
         } else {
-            this._plannerService.removePlan(this.plan);
+            this._planService.removePlan(this.plan);
         }
     }
 

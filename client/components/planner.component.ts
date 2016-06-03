@@ -10,7 +10,7 @@ import {
 
 import { Plan } from "./plan";
 
-import { PlannerService } from "../services/planner.service";
+import { PlanService } from "../services/plan.service";
 
 // Angular currently doesn't support iterating over maps except with pipes.
 // https://github.com/angular/angular/issues/2246
@@ -53,7 +53,7 @@ export class MapValuesPipe implements PipeTransform {
                     <p>{{ "$".repeat(plan.place.priceLevel) }}</p>
                     <p>{{ plan.place.rating }}</p>
                     <p>{{ plan.place.website }}</p>
-                    <button (click)="_plannerService.removePlan(plan)" type="button">Remove Plan</button>
+                    <button (click)="_planService.removePlan(plan)" type="button">Remove Plan</button>
                 </li>
             </ul>
         </div>
@@ -67,21 +67,21 @@ export class PlannerComponent implements OnDestroy {
     private _planRemovedSubscription: any;
 
     constructor (private _changeDetector: ChangeDetectorRef,
-                 private _plannerService: PlannerService)
+                 private _planService: PlanService)
     {
         // Trigger change detection with an observable for this PlannerComponent so
         // that the impure MapValuesPipe won't run upon every change detection.
         // http://blog.thoughtram.io/angular/2016/02/22/angular-2-change-detection-explained.html
 
         this._planAddedSubscription =
-            this._plannerService.planAdded.subscribe((plan: Plan) => {
+            this._planService.planAdded.subscribe((plan: Plan) => {
                 if (this.addPlan(plan)) {
                     this._changeDetector.markForCheck();
                 }
             });
 
         this._planRemovedSubscription =
-            this._plannerService.planRemoved.subscribe((plan: Plan) => {
+            this._planService.planRemoved.subscribe((plan: Plan) => {
                 if (this.removePlan(plan)) {
                     this._changeDetector.markForCheck();
                 }

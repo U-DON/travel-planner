@@ -7,7 +7,7 @@ import {
     ViewChild
 } from "@angular/core";
 
-import { PlannerService } from "../services/planner.service";
+import { PlanService } from "../services/plan.service";
 import { Plan, Place } from "./plan";
 import { MapService } from "../services/map.service";
 import { SelectionComponent } from "./selection.component";
@@ -57,18 +57,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     constructor (private _zone: NgZone,
                  private _mapService: MapService,
-                 private _plannerService: PlannerService)
+                 private _planService: PlanService)
     {
         this.placeMarkers = new Map<string, google.maps.Marker>();
         this.planMarkers = new Map<string, google.maps.Marker>();
 
         this._planAddedSubscription =
-            this._plannerService.planAdded.subscribe((plan: Plan) => {
+            this._planService.planAdded.subscribe((plan: Plan) => {
                 this.createPlanMarker(plan);
             });
 
         this._planRemovedSubscription =
-            this._plannerService.planRemoved.subscribe((plan: Plan) => {
+            this._planService.planRemoved.subscribe((plan: Plan) => {
                 this.planMarkers.get(plan.place.placeId).setMap(null);
                 this.planMarkers.delete(plan.place.placeId);
                 // Select the corresponding place marker if it's there.

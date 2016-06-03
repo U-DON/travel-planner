@@ -5,7 +5,7 @@ import { Subject } from "rxjs/Subject";
 import { Plan, PlanStatus } from "../components/plan";
 
 @Injectable()
-export class PlannerService {
+export class PlanService {
 
     // Use observables to relay data between Planner and Map components.
     // http://stackoverflow.com/a/34714574/1070621
@@ -15,13 +15,13 @@ export class PlannerService {
     planRemoved = new EventEmitter<Plan>();
 
     addPlan (plan: Plan) {
-        console.log("PlannerService.addPlan");
+        console.log("PlanService.addPlan");
         plan.status = PlanStatus.INTERESTED;
         this.planAdded.emit(plan);
     }
 
     removePlan (plan: Plan) {
-        console.log("PlannerService.removePlan");
+        console.log("PlanService.removePlan");
         plan.status = PlanStatus.NOT_INTERESTED;
         this.planRemoved.emit(plan);
     }
