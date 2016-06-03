@@ -1,3 +1,10 @@
+@font-face {
+    font-family: "BackToBlack";
+    src: url("#{$font-path}/back-to-black-demo.regular.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body
 {
     height: 100vh;
@@ -8,9 +15,11 @@ html, body
 
 body
 {
+    color: #444444;
     display: flex;
     flex-direction: row; // Flip for vertical screens?
     font-family: Helvetica, Arial, Sans-Serif;
+    font-size: 16px;
 }
 
 h1, h2, h3, h4, h5, h6, p
@@ -24,4 +33,9 @@ h1, h2, h3, h4, h5, h6, p
     {
         margin-bottom: 0;
     }
+}
+
+button
+{
+    cursor: pointer;
 }
