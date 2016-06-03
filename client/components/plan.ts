@@ -35,9 +35,9 @@ export class Place {
             // Scale photo according to its dimensions.
             // TODO: Increase size of smaller images;
             if (photo.width > photo.height) {
-                photoUrl = photo.getUrl({ maxHeight: 360 });
+                photoUrl = photo.getUrl({ maxHeight: 320 });
             } else {
-                photoUrl = photo.getUrl({ maxWidth: 540 });
+                photoUrl = photo.getUrl({ maxWidth: 480 });
             }
 
             photoUrl = `url(${photoUrl})`;
