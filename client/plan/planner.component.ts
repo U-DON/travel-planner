@@ -8,53 +8,11 @@ import {
     PipeTransform
 } from "@angular/core";
 
+import { MapValuesPipe } from "../common/map-values.pipe";
+import { CurrencyPipe } from "./currency.pipe";
 import { Plan } from "./plan";
 import { PlanService } from "./plan.service";
-
-// Angular currently doesn't support iterating over maps except with pipes.
-// https://github.com/angular/angular/issues/2246
-@Pipe({
-    name: "mapValues",
-    pure: false
-})
-export class MapValuesPipe implements PipeTransform {
-    transform (map: Map<any, any>, args?: any[]): Object[] {
-        let array = Array.from(map.values());
-        console.log("MapValuesPipe array length: " + array.length);
-        return array;
-    }
-}
-
-@Pipe({
-    name: "toCurrency"
-})
-export class CurrencyPipe implements PipeTransform {
-    transform (priceLevel: number): string {
-        let currencyText = "<i class='fa fa-usd'></i>".repeat(priceLevel)
-                         + "<span class='sr-only'>"
-                         + "$".repeat(priceLevel)
-                         + "</span>";
-
-        return currencyText;
-    }
-}
-
-@Pipe({
-    name: "toRating"
-})
-export class RatingPipe implements PipeTransform {
-    transform (rating: number): string {
-        let stars = Math.floor(rating);
-        let halfStar = (rating === stars ? 0 : 1);
-        let starRating = "<i class='fa fa-star'></i>".repeat(stars)
-                       + "<i class='fa fa-star-half'></i>".repeat(halfStar)
-                       + "<span class='sr-only'>"
-                       + rating
-                       + " stars</span>";
-
-        return starRating;
-    }
-}
+import { RatingPipe } from "./rating.pipe";
 
 @Component({
     selector: "planner",
