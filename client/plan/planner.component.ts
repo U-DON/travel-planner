@@ -42,7 +42,12 @@ import { PlanService } from "./plan.service";
                     <span [innerHTML]="plan.place.priceLevel | toCurrency"></span>
                     <span [innerHTML]="plan.place.rating | toRating"></span>
                     <p>{{ plan.place.website }}</p>
-                    <button (click)="_planService.removePlan(plan)" type="button">Remove Plan</button>
+                    <button
+                        (click)="$event.stopPropagation(); _planService.removePlan(plan);"
+                        type="button"
+                    >
+                        Remove Plan
+                    </button>
                 </li>
             </ul>
         </div>
