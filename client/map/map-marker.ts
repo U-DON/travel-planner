@@ -63,7 +63,7 @@ export module MapMarker {
         strokeOpacity: 0.5,
         strokeWeight: 1,
         width: 1664,
-        zIndex: 100
+        zIndex: 10
     };
 
     export const TACK: MapMarker = {

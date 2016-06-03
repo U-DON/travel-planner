@@ -190,7 +190,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
         marker.addListener("focused_changed", () => {
             if (marker.get("focused")) {
-                marker.setZIndex(1000);
+                marker.setZIndex(google.maps.Marker.MAX_ZINDEX);
                 marker.setOpacity(1);
             } else {
                 marker.setZIndex(icon.zIndex);
@@ -212,7 +212,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             map: this.map,
             position: position,
             visible: false,
-            zIndex: 999
+            zIndex: google.maps.Marker.MAX_ZINDEX - 1
         });
 
         // Bind focus marker's map property to main marker's so when the main
