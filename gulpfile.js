@@ -17,6 +17,7 @@ gulp.task('clean', function () {
 
 gulp.task('ts', function () {
     gulp.src(['client/**/*.ts'])
+        .pipe(plumber())
         .pipe(webpack(require('./client/webpack.config.js')))
         .pipe(gulp.dest('public/js'))
         .pipe(browserSync.reload({stream: true}));
