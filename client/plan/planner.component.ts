@@ -25,10 +25,41 @@ export class MapValuesPipe implements PipeTransform {
     }
 }
 
+@Pipe({
+    name: "toCurrency"
+})
+export class CurrencyPipe implements PipeTransform {
+    transform (priceLevel: number): string {
+        let currencyText = "<i class='fa fa-usd'></i>".repeat(priceLevel)
+                         + "<span class='sr-only'>"
+                         + "$".repeat(priceLevel)
+                         + "</span>";
+
+        return currencyText;
+    }
+}
+
+@Pipe({
+    name: "toRating"
+})
+export class RatingPipe implements PipeTransform {
+    transform (rating: number): string {
+        let stars = Math.floor(rating);
+        let halfStar = (rating === stars ? 0 : 1);
+        let starRating = "<i class='fa fa-star'></i>".repeat(stars)
+                       + "<i class='fa fa-star-half'></i>".repeat(halfStar)
+                       + "<span class='sr-only'>"
+                       + rating
+                       + " stars</span>";
+
+        return starRating;
+    }
+}
+
 @Component({
     selector: "planner",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    pipes: [MapValuesPipe],
+    pipes: [MapValuesPipe, CurrencyPipe, RatingPipe],
     styles: [`
         :host {
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.25);
@@ -43,14 +74,13 @@ export class MapValuesPipe implements PipeTransform {
     template: `
         <div id="logo">Travelogue</div>
         <div id="plan">
-            <h1>Plan</h1>
             <ul>
                 <li *ngFor="let plan of plans | mapValues; let i = index">
                     <h2>{{ plan.place.name }}</h2>
                     <p>{{ plan.place.address }}</p>
                     <p>{{ plan.place.phoneNumber }}</p>
-                    <p>{{ "$".repeat(plan.place.priceLevel) }}</p>
-                    <p>{{ plan.place.rating }}</p>
+                    <span [innerHTML]="plan.place.priceLevel | toCurrency"></span>
+                    <span [innerHTML]="plan.place.rating | toRating"></span>
                     <p>{{ plan.place.website }}</p>
                     <button (click)="_planService.removePlan(plan)" type="button">Remove Plan</button>
                 </li>
