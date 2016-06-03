@@ -49,8 +49,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     private _planRemovedSubscription: any;
 
     map: google.maps.Map;
-    placeMarkers: google.maps.Marker[] = [];
-    planMarkers: Map<string, google.maps.Marker> = new Map<string, google.maps.Marker>();
+    placeMarkers: Map<string, google.maps.Marker>;
+    planMarkers: Map<string, google.maps.Marker>;
     searchBox: google.maps.places.SearchBox;
     selectedMarker: google.maps.Marker;
     selection: Plan;
@@ -59,6 +59,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                  private _mapService: MapService,
                  private _plannerService: PlannerService)
     {
+        this.placeMarkers = new Map<string, google.maps.Marker>();
+        this.planMarkers = new Map<string, google.maps.Marker>();
+
         this._planAddedSubscription =
             this._plannerService.planAdded.subscribe((plan: Plan) => {
                 this.createPlanMarker(plan);
@@ -70,6 +73,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                 this.planMarkers.delete(plan.place.placeId);
                 // Select the corresponding place marker if it's there.
                 // If not, create and select a new place marker?
+                let placeMarker = this.placeMarkers.get(plan.place.placeId);
+                if (placeMarker) {
+                    this.selectMarker(placeMarker);
+                } else {
+                    this.createTempMarker(MapMarker.TACK, plan);
+                }
             });
     }
 
@@ -118,14 +127,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     clearPlaceMarkers () {
         // Clear out the old place markers.
         // If one is currently selected, clear the selection as well.
-        this.placeMarkers.forEach((marker: google.maps.Marker) => {
+        this.placeMarkers.forEach((marker: google.maps.Marker, index: string) => {
             if (marker === this.selectedMarker) {
                 this.selectMarker(null);
             }
 
             marker.setMap(null);
         });
-        this.placeMarkers = [];
+        this.placeMarkers.clear();
     }
 
     createMarker(icon: MapMarker, plan: Plan): google.maps.Marker {
@@ -217,7 +226,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         return marker;
     }
 
-    createPlaceMarker (place: google.maps.places.PlaceResult) {
+    createPlaceMarker (place: google.maps.places.PlaceResult): google.maps.Marker {
         // If this place already has a plan, connect it with the existing plan.
         let planMarker = this.planMarkers.get(place.place_id);
         let plan: Plan;
@@ -229,11 +238,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
 
         let marker = this.createMarker(MapMarker.MARKER, plan);
-        this.placeMarkers.push(marker);
+        this.placeMarkers.set(place.place_id, marker);
         return marker;
     }
 
-    createPlanMarker (plan: Plan) {
+    createPlanMarker (plan: Plan): google.maps.Marker {
         if (this.planMarkers.has(plan.place.placeId))
             return;
 
@@ -245,8 +254,25 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         return marker;
     }
 
+    createTempMarker (icon: MapMarker, plan: Plan): google.maps.Marker {
+        let marker = this.createMarker(MapMarker.TACK, plan);
+
+        this.selectMarker(marker);
+
+        // Discard this marker as soon as the user clicks away.
+        marker.addListener("focused_changed", () => {
+            marker.setMap(null);
+            this.placeMarkers.delete(plan.place.placeId);
+        });
+
+        return marker;
+    }
+
     selectMarker (marker: google.maps.Marker) {
         this.searchInput.nativeElement.blur();
+
+        if (marker === this.selectedMarker)
+            return;
 
         if (this.selectedMarker) {
             this.selectedMarker.set("focused", false);
@@ -288,8 +314,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         });
 
         // Automatically show the place info if the search returned only one result.
-        if (this.placeMarkers.length === 1) {
-            this.selectMarker(this.placeMarkers[0]);
+        if (this.placeMarkers.size === 1) {
+            this.selectMarker(this.placeMarkers.values().next().value);
         }
 
         this.map.fitBounds(bounds);

@@ -1,5 +1,6 @@
 import {
     AfterViewInit,
+    ChangeDetectorRef,
     ChangeDetectionStrategy,
     Component,
     ElementRef,
@@ -28,7 +29,9 @@ import { Plan, PlanStatus } from "./plan";
                 <p>{{ plan.place.rating }}</p>
                 <p>{{ plan.place.website }}</p>
             </div>
-            <button (click)="changePlanStatus()" type="button">{{ plan.status ? 'Remove From Plan' : 'Add To Plan' }}</button>
+            <button id="selection-button" (click)="changePlanStatus()" type="button">
+                {{ plan.status ? 'Remove From Plan' : 'Add To Plan' }}
+            </button>
         </div>
     `
 })
@@ -45,10 +48,18 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
     // Create a native element to allow Google Maps to add it to its controls.
     nativeElement: HTMLUnknownElement;
 
-    constructor (private _plannerService: PlannerService,
+    private _planRemovedSubscription: any;
+
+    constructor (private _changeDetector: ChangeDetectorRef,
+                 private _plannerService: PlannerService,
                  elementRef: ElementRef)
     {
         this.nativeElement = elementRef.nativeElement;
+
+        this._planRemovedSubscription =
+            this._plannerService.planRemoved.subscribe((plan: Plan) => {
+                this._changeDetector.markForCheck();
+            });
     }
 
     ngAfterViewInit () {
