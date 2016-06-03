@@ -10,9 +10,7 @@ import {
 
 import { PlannerService } from "../services/planner.service";
 
-import { Plan, PlanStatus } from "./planner.component";
-
-import { PlaceInfo } from "./map.component";
+import { Plan, PlanStatus } from "./plan";
 
 @Component({
     selector: "selection",

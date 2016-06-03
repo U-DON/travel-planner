@@ -8,128 +8,11 @@ import {
 } from "@angular/core";
 
 import { PlannerService } from "../services/planner.service";
-import { Plan } from "./planner.component";
+import { Plan, PlaceInfo } from "./plan";
 import { MapService } from "../services/map.service";
 import { SelectionComponent } from "./selection.component";
 
-const enum MapMarkerType {
-    PLACE,
-    PLAN
-}
-
-interface MapMarkerIcon {
-    fillColor: string;
-    fillOpacity: number;
-    markerType: MapMarkerType;
-    opacity: number;
-    // SVG rendering of icon image represented by a path.
-    // Paths are copied from the SVGs of Font Awesome's icons.
-    path: string;
-    rotation: number;
-    scale: number;
-    strokeColor: string;
-    strokeOpacity: number;
-    strokeWeight: number;
-    // Width of SVG, which was determined separately and hard-coded.
-    // This is used to re-center the icon over the map location.
-    width: number;
-    zIndex: number;
-}
-
-namespace MapMarkerIcon {
-
-    export const MARKER: MapMarkerIcon = {
-        fillColor: "#82ffeb",
-        fillOpacity: 1,
-        markerType: MapMarkerType.PLACE,
-        opacity: 0.7,
-        path: `
-            M768 896q0 106 -75 181t-181 75t-181 -75t-75 -181t75 -181t181
-            -75t181 75t75 181zM1024 896q0 -109 -33 -179l-364 -774q-16 -33 -47.5
-            -52t-67.5 -19t-67.5 19t-46.5 52l-365 774q-33 70 -33 179q0 212 150
-            362t362 150t362 -150t150 -362z
-        `,
-        rotation: 180,
-        scale: 0.02,
-        strokeColor: "black",
-        strokeOpacity: 0.5,
-        strokeWeight: 1,
-        width: 1024,
-        zIndex: 1
-    };
-
-    export const STAR: MapMarkerIcon = {
-        fillColor: "#ff9c50",
-        fillOpacity: 1,
-        markerType: MapMarkerType.PLAN,
-        opacity: 0.7,
-        path: `
-            M1664 889q0 -22 -26 -48l-363 -354l86 -500q1 -7 1 -20q0 -21 -10.5
-            -35.5t-30.5 -14.5q-19 0 -40 12l-449 236l-449 -236q-22 -12 -40
-            -12q-21 0 -31.5 14.5t-10.5 35.5q0 6 2 20l86 500l-364 354q-25 27 -25
-            48q0 37 56 46l502 73l225 455q19 41 49 41t49 -41l225 -455 l502
-            -73q56 -9 56 -46z
-        `,
-        rotation: 180,
-        scale: 0.02,
-        strokeColor: "black",
-        strokeOpacity: 0.5,
-        strokeWeight: 1,
-        width: 1664,
-        zIndex: 100
-    };
-
-}
-
-export class PlaceInfo {
-
-    placeId: string;
-    name: string;
-    address: string;
-    phoneNumber: string;
-    photos: google.maps.places.PlacePhoto[];
-    priceLevel: number;
-    rating: number;
-    types: string[];
-    website: string;
-
-    geometry: google.maps.places.PlaceGeometry;
-
-    constructor (place: google.maps.places.PlaceResult) {
-        this.placeId = place.place_id;
-        this.name = place.name;
-        this.address = place.formatted_address;
-        this.phoneNumber = place.formatted_phone_number;
-        this.photos = place.photos;
-        this.priceLevel = place.price_level;
-        this.rating = place.rating;
-        this.types = place.types;
-        this.website = place.website;
-
-        this.geometry = place.geometry;
-    }
-
-    photoUrl (): string {
-        let photoUrl: string = "none";
-
-        if (this.photos && this.photos.length > 0) {
-            let photo = this.photos[0];
-
-            // Scale photo according to its dimensions.
-            // TODO: Increase size of smaller images;
-            if (photo.width > photo.height) {
-                photoUrl = photo.getUrl({ maxHeight: 360 });
-            } else {
-                photoUrl = photo.getUrl({ maxWidth: 540 });
-            }
-
-            photoUrl = `url(${photoUrl})`;
-        }
-
-        return photoUrl;
-    }
-
-}
+import { MapMarker } from "./map-marker";
 
 @Component({
     selector: "map",
@@ -245,12 +128,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.placeMarkers = [];
     }
 
-    createMarker(icon: MapMarkerIcon, plan: Plan): google.maps.Marker {
+    createMarker(icon: MapMarker, plan: Plan): google.maps.Marker {
         let position = plan.place.geometry.location;
 
-        console.log("Creating marker: " + position.toString() + " (string); " + position.toUrlValue() + " (URL value)");
+        // TODO: Consider using LatLng URL values (comma-delimited pairs) as keys
+        //       for plan markers in case not every location has a place id.
+        console.log("Creating marker: " + position.toUrlValue() + " (URL value)\n"
+                                        + plan.place.placeId + " (place id)");
 
-        let animation = (icon.markerType === MapMarkerType.PLAN)
+        let animation = (icon.markerType === MapMarker.Type.PLAN)
                       ? google.maps.Animation.DROP
                       : null;
 
@@ -361,7 +247,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             plan = new Plan(new PlaceInfo(place));
         }
 
-        let marker = this.createMarker(MapMarkerIcon.MARKER, plan);
+        let marker = this.createMarker(MapMarker.MARKER, plan);
         this.placeMarkers.push(marker);
         return marker;
     }
@@ -370,7 +256,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (this.planMarkers.has(plan.place.placeId))
             return;
 
-        let marker = this.createMarker(MapMarkerIcon.STAR, plan);
+        let marker = this.createMarker(MapMarker.STAR, plan);
         this.planMarkers.set(plan.place.placeId, marker);
 
         this.selectMarker(marker);

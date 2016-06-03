@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from "@angular/core";
 
 import { Subject } from "rxjs/Subject";
 
-import { Plan, PlanStatus } from "../components/planner.component";
+import { Plan, PlanStatus } from "../components/plan";
 
 @Injectable()
 export class PlannerService {
