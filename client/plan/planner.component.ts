@@ -9,10 +9,9 @@ import {
 } from "@angular/core";
 
 import { MapValuesPipe } from "../common/map-values.pipe";
-import { CurrencyPipe } from "./currency.pipe";
+import { CurrencyPipe, RatingPipe } from "./pipes";
 import { Plan } from "./plan";
 import { PlanService } from "./plan.service";
-import { RatingPipe } from "./rating.pipe";
 
 @Component({
     selector: "planner",

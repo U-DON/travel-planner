@@ -9,11 +9,13 @@ import {
     ViewChild
 } from "@angular/core";
 
+import { CurrencyPipe, RatingPipe } from "../plan/pipes";
 import { Plan, PlanStatus } from "../plan/plan";
 import { PlanService } from "../plan/plan.service";
 
 @Component({
     selector: "selection",
+    pipes: [CurrencyPipe, RatingPipe],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <div id="selection">
@@ -24,8 +26,8 @@ import { PlanService } from "../plan/plan.service";
                 <h2>{{ plan.place.name }}</h2>
                 <p>{{ plan.place.address }}</p>
                 <p>{{ plan.place.phoneNumber }}</p>
-                <p>{{ "$".repeat(plan.place.priceLevel) }}</p>
-                <p>{{ plan.place.rating }}</p>
+                <span [innerHTML]="plan.place.priceLevel | toCurrency"></span>
+                <span [innerHTML]="plan.place.rating | toRating"></span>
                 <p>{{ plan.place.website }}</p>
             </div>
             <button id="selection-button" (click)="changePlanStatus()" type="button">
