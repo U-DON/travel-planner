@@ -79,8 +79,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             this._planService.planRemoved.subscribe((plan: Plan) => {
                 this.planMarkers.get(plan.place.placeId).setMap(null);
                 this.planMarkers.delete(plan.place.placeId);
+
                 // Select the corresponding place marker if it's there.
-                // If not, create and select a new place marker?
+                // If not, create and select a temporary place marker.
                 let placeMarker = this.placeMarkers.get(plan.place.placeId);
                 if (placeMarker) {
                     this.selectMarker(placeMarker);
@@ -102,8 +103,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     initMap () {
-        console.log("Yay, map loaded!");
-
         // Upon getting the callback from Google Maps API,
         // set up the map and controls and their listeners.
 
@@ -237,13 +236,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     createPlaceMarker (place: google.maps.places.PlaceResult): google.maps.Marker {
         // If this place already has a plan, connect it with the existing plan.
         let planMarker = this.planMarkers.get(place.place_id);
-        let plan: Plan;
-
-        if (planMarker) {
-            plan = planMarker.get("plan");
-        } else {
-            plan = new Plan(new Place(place));
-        }
+        let plan = (planMarker)
+                 ?  planMarker.get("plan")
+                 :  new Plan(new Place(place));
 
         let marker = this.createMarker(MapMarker.MARKER, plan);
         this.placeMarkers.set(place.place_id, marker);
@@ -251,8 +246,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     createPlanMarker (plan: Plan): google.maps.Marker {
-        if (this.planMarkers.has(plan.place.placeId))
-            return;
+        if (this.planMarkers.has(plan.place.placeId)) return;
 
         let marker = this.createMarker(MapMarker.STAR, plan);
         this.planMarkers.set(plan.place.placeId, marker);
@@ -279,8 +273,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     selectMarker (marker: google.maps.Marker) {
         this.searchInput.nativeElement.blur();
 
-        if (marker === this.selectedMarker)
-            return;
+        if (marker === this.selectedMarker) return;
 
         if (this.selectedMarker) {
             this.selectedMarker.set("focused", false);
@@ -300,10 +293,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     onPlacesChanged () {
         let places: google.maps.places.PlaceResult[] = this.searchBox.getPlaces();
-
-        if (places.length == 0) {
-            return;
-        }
+        if (places.length === 0) return;
 
         this.clearPlaceMarkers();
 

@@ -9,7 +9,6 @@ import { Pipe, PipeTransform } from "@angular/core";
 export class MapValuesPipe implements PipeTransform {
     transform (map: Map<any, any>, args?: any[]): Object[] {
         let array = Array.from(map.values());
-        console.log("MapValuesPipe array length: " + array.length);
         return array;
     }
 }

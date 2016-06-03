@@ -1,29 +1,27 @@
 export class Place {
 
-    placeId: string;
-    name: string;
     address: string;
+    geometry: google.maps.places.PlaceGeometry;
+    name: string;
     phoneNumber: string;
     photos: google.maps.places.PlacePhoto[];
+    placeId: string;
     priceLevel: number;
     rating: number;
     types: string[];
     website: string;
 
-    geometry: google.maps.places.PlaceGeometry;
-
     constructor (place: google.maps.places.PlaceResult) {
-        this.placeId = place.place_id;
-        this.name = place.name;
         this.address = place.formatted_address;
+        this.geometry = place.geometry;
+        this.name = place.name;
         this.phoneNumber = place.formatted_phone_number;
         this.photos = place.photos;
+        this.placeId = place.place_id;
         this.priceLevel = place.price_level;
         this.rating = place.rating;
         this.types = place.types;
         this.website = place.website;
-
-        this.geometry = place.geometry;
     }
 
     photoUrl (): string {

@@ -84,7 +84,6 @@ export class PlannerComponent implements OnDestroy {
 
     addPlan (plan: Plan): boolean {
         if (!this.plans.has(plan.place.placeId)) {
-            console.log("PlannerComponent adding plan");
             this.plans.set(plan.place.placeId, plan);
             return true;
         }
