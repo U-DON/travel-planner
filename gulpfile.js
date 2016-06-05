@@ -30,7 +30,7 @@ gulp.task('fonts', function () {
 });
 
 gulp.task('css', function () {
-    gulp.src(['assets/css/**/*.scss', 'node_modules/font-awesome/scss/*.scss'])
+    gulp.src(['node_modules/font-awesome/scss/*.scss', 'assets/css/**/*.scss'])
         .pipe(plumber())
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer('last 2 versions'))
