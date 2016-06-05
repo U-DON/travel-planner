@@ -110,13 +110,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             center: new google.maps.LatLng(37.09024, -95.712891),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControl: false,
-            streetViewControlOptions: {
-                position: google.maps.ControlPosition.TOP_RIGHT
-            },
-            zoom: 3,
-            zoomControlOptions: {
-                position: google.maps.ControlPosition.TOP_RIGHT
-            }
+            zoom: 3
         };
 
         this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
@@ -273,6 +267,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     selectMarker (marker: google.maps.Marker) {
         this.searchInput.nativeElement.blur();
 
+        // TODO: Pan to the marker if it's off-screen.
         if (marker === this.selectedMarker) return;
 
         if (this.selectedMarker) {
