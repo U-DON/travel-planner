@@ -13,58 +13,54 @@
 #logo
 {
     background: $orange;
-    color: #ffffff;
     font-family: "BackToBlack";
-    font-size: 3em;
+    font-size: 48px;
     padding: 0.5em;
     text-align: center;
     text-shadow: 1px 2px rgba(0, 0, 0, 0.35);
+
+    & > a
+    {
+        color: #ffffff;
+    }
 }
 
-#plan
+#plan-list
 {
-    background: #fcfcfc;
+    background: #fefefe;
     height: 100%;
-    padding: 2em 2.5em;
+    overflow: auto;
+}
 
-    ol, ul
+.plan
+{
+    background: #eee;
+    cursor: pointer;
+    margin: 1em;
+    padding: 2em;
+    position: relative;
+
+    button
     {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    li
-    {
-        background: $blue;
-        cursor: pointer;
-        margin: 0;
-        padding: 2em;
-        position: relative;
-
-        &:after
-        {
-            clear: both;
-            content: "";
-            display: block;
-        }
-
-        & + li
-        {
-            margin-top: 1em;
-        }
-
-        button
-        {
-            background: #444444;
-            border: 0;
-            color: #ffffff;
-            float: right;
-            font-size: 14px;
-            padding: 1em;
-            position: absolute;
-            right: 0;
-            top: 0;
-        }
+        background: #444444;
+        border: 0;
+        color: #ffffff;
+        float: right;
+        font-size: 12px;
+        padding: 1em;
+        position: absolute;
+        right: 0;
+        top: 0;
     }
 }
+
+.plan-rating
+{
+    color: $yellow;
+}
+
+.plan-price
+{
+    color: $green;
+}
+

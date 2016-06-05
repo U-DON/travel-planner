@@ -21,7 +21,7 @@
 
     & > *
     {
-        margin: 1em 1em 0 1em;
+        margin: 2em;
         // Allow interactions with the inner elements.
         pointer-events: all;
     }
@@ -33,6 +33,7 @@
     box-shadow: 0 $shadow-offset $shadow-blur-radius rgba(0, 0, 0, 0.25);
     box-sizing: padding-box;
     height: 3em;
+    margin-bottom: 0;
     padding: 0 1em;
     width: 480px;
 }
@@ -45,30 +46,76 @@
 #selection
 {
     box-sizing: padding-box;
-    background: #f9f9f9;
+    background: #fefefe;
     box-shadow: 0 $shadow-offset $shadow-blur-radius rgba(0, 0, 0, 0.25);
     font-size: 14px;
+    margin-top: 1em;
+    padding: 8px;
     width: 480px;
 }
 
 #selection-photo
 {
-    background-color: #f4f4f4;
+    background-color: #f6f6f6;
     background-position: center;
     background-repeat: no-repeat;
+    background-size: cover;
     height: 320px;
     overflow: hidden;
 }
 
 #selection-info
 {
-    padding: 2em;
+    padding: 2em 1.5em;
+
+    .plan-summary
+    {
+        margin-bottom: 2.5em;
+    }
+
+    & .plan-main-detail
+    {
+        display: flex;
+        align-items: center;
+
+        & span + span
+        {
+            margin-left: 1em;
+        }
+    }
+
+    & .plan-detail
+    {
+        display: flex;
+        line-height: 1.5em;
+        margin-top: 1em;
+        position: relative;
+    }
+
+    & .plan-detail-label
+    {
+        align-items: center;
+        display: flex;
+        font-size: 16px;
+        justify-content: center;
+        height: 1.5em;
+        width: 1em;
+    }
+
+    & .plan-detail-text
+    {
+        align-items: center;
+        color: #888888;
+        display: flex;
+        flex: 1;
+        margin-left: 1.5em;
+    }
 }
 
 #selection-button
 {
-    border: 0;
     background: $orange;
+    border: 0;
     color: #ffffff;
     padding: 1em;
     text-align: center;

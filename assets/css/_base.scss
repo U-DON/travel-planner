@@ -19,7 +19,7 @@ body
     display: flex;
     flex-direction: row; // Flip for vertical screens?
     font-family: Helvetica, Arial, Sans-Serif;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 h1, h2, h3, h4, h5, h6, p
@@ -33,6 +33,12 @@ h1, h2, h3, h4, h5, h6, p
     {
         margin-bottom: 0;
     }
+}
+
+a
+{
+    color: $blue;
+    text-decoration: none;
 }
 
 button
