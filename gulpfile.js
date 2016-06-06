@@ -1,15 +1,16 @@
 var autoprefixer = require('gulp-autoprefixer'),
-    browserSync = require('browser-sync'),
-    cleanCss = require('gulp-clean-css'),
-    concat = require('gulp-concat'),
-    del = require('del'),
-    gulp = require('gulp'),
-    plumber = require('gulp-plumber'),
-    sass = require('gulp-sass'),
-    rename = require('gulp-rename'),
-    ts = require('gulp-typescript'),
-    uglify = require('gulp-uglify'),
-    webpack = require('webpack-stream');
+     browserSync = require('browser-sync'),
+        cleanCss = require('gulp-clean-css'),
+          concat = require('gulp-concat'),
+             del = require('del'),
+            gulp = require('gulp'),
+         nodemon = require('gulp-nodemon'),
+         plumber = require('gulp-plumber'),
+            sass = require('gulp-sass'),
+          rename = require('gulp-rename'),
+              ts = require('gulp-typescript'),
+          uglify = require('gulp-uglify'),
+         webpack = require('webpack-stream');
 
 gulp.task('clean', function () {
     del(['public/css/*', 'public/js/*']);
@@ -69,7 +70,25 @@ gulp.task('watch', function () {
     gulp.watch('assets/js/**/*.js', ['js']);
     gulp.watch('client/**/*.ts', ['ts']);
     gulp.watch('public/*.html', ['html']);
-
 });
+
+gulp.task('server', function () {
+    nodemon({
+        script: 'server/app.js',
+        env: {
+            'NODE_ENV': process.env.NODE_ENV
+        }
+    });
+});
+
+gulp.task('env:dev', function () {
+    return process.env.NODE_ENV = 'development';
+});
+
+gulp.task('env:prod', function () {
+    return process.env.NODE_ENV = 'production';
+});
+
+gulp.task('deploy', ['env:prod', 'clean', 'ts', 'css', 'fonts', 'server']);
 
 gulp.task('default', ['clean', 'ts', 'css', 'fonts', 'sync', 'watch']);
