@@ -5,7 +5,9 @@
   "main": "app/app.js",
   "scripts": {
     "gulp": "gulp",
-    "typings": "typings"
+    "typings": "typings",
+    "start": "gulp server",
+    "postinstall": "typings install"
   },
   "author": "Eugene Doan",
   "license": "ISC",
