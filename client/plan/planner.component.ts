@@ -3,20 +3,19 @@ import {
     ChangeDetectorRef,
     Component,
     OnChanges,
-    OnDestroy,
-    Pipe,
-    PipeTransform
+    OnDestroy
 } from "@angular/core";
 
 import { MapValuesPipe } from "../common/map-values.pipe";
-import { CurrencyPipe, RatingPipe } from "./pipes";
 import { Plan } from "./plan";
+import { PlanComponent } from "./plan.component";
 import { PlanService } from "./plan.service";
 
 @Component({
     selector: "planner",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    pipes: [MapValuesPipe, CurrencyPipe, RatingPipe],
+    directives: [PlanComponent],
+    pipes: [MapValuesPipe],
     styles: [`
         :host {
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.25);
@@ -31,37 +30,12 @@ import { PlanService } from "./plan.service";
     template: `
         <div id="logo"><a href="/">Travelogue</a></div>
         <div id="plan-list">
-            <div
+            <plan
                 *ngFor="let plan of plans | mapValues; let i = index"
                 class="plan"
+                [plan]="plan"
             >
-                <div class="plan-summary">
-                    <a 
-                        (click)="$event.stopPropagation(); _planService.selectPlan(plan);"
-                        class="plan-place"
-                    >
-                        {{ plan.place.name }}
-                    </a>
-                    <div class="plan-description">
-                        <textarea [(ngModel)]="plan.description" name="description"></textarea>
-                    </div>
-                </div>
-                <div class="plan-detail-group">
-                    <div class="plan-detail plan-votes">
-                        <button class="plan-detail-label"><i class="fa fa-check"></i></button>
-                        <span class="plan-detail-text">{{ plan.votes }} votes</span>
-                    </div>
-                    <div class="plan-detail">
-                        <button
-                            (click)="$event.stopPropagation(); _planService.removePlan(plan);"
-                            class="plan-remove"
-                            type="button"
-                        >
-                            <span><i class="fa fa-close"></i>&nbsp; Remove Plan</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            </plan>
         </div>
     `
 })

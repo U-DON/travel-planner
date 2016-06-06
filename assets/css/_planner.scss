@@ -31,28 +31,24 @@
     height: 100%;
     overflow: auto;
 
-    & .plan-detail
+    & .plan-detail-group
     {
-        display: flex;
-        align-items: center;
-        margin: 0;
-
-        & + .plan-detail
+        & .plan-detail
         {
-            margin-left: 1em;
-        }
-    }
+            margin: 0;
 
-    & .plan-detail-text
-    {
-        background: #eee;
-        padding: 1em;
+            & + .plan-detail
+            {
+                margin-left: 1em;
+            }
+        }
     }
 }
 
 .plan
 {
     border-bottom: 1px solid #eee;
+    display: block;
     padding: 2em;
     position: relative;
 
@@ -136,16 +132,33 @@
 
 .plan-votes
 {
-    & .plan-detail-label
+    & input
     {
-        background: #888;
-        color: #ffffff;
-        padding: 1em;
+        display: none;
 
-        &:hover
+        & + label
+        {
+            background: #888;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 1em;
+
+            &:hover
+            {
+                background: $green;
+            }
+        }
+
+        &:checked + label
         {
             background: $green;
         }
+    }
+
+    & .plan-detail-text
+    {
+        background: #eee;
+        padding: 1em;
     }
 }
 
