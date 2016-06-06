@@ -17,14 +17,23 @@ import { PlanService } from "./plan.service";
     pipes: [CurrencyPipe, RatingPipe],
     template: `
         <div class="plan-summary">
-            <a
-                (click)="$event.stopPropagation(); _planService.selectPlan(plan);"
-                class="plan-place"
-            >
-                {{ plan.place.name }}
-            </a>
+            <div class="plan-place">
+                <a
+                    (click)="$event.preventDefault(); _planService.selectPlan(plan);"
+                    href="#{{ plan.place.placeId }}"
+                >
+                    {{ plan.place.name }}
+                </a>
+            </div>
             <div class="plan-description">
-                <textarea #descriptionInput [(ngModel)]="plan.description" name="description"></textarea>
+                <textarea
+                    #description
+                    [(ngModel)]="plan.description"
+                    (keydown.enter)="$event.preventDefault(); description.blur();"
+                    name="description"
+                    placeholder="Write a description!"
+                >
+                </textarea>
             </div>
         </div>
         <div class="plan-detail-group">
@@ -44,11 +53,11 @@ import { PlanService } from "./plan.service";
             </div>
             <div class="plan-detail">
                 <button
-                    (click)="$event.stopPropagation(); _planService.removePlan(plan);"
+                    (click)="_planService.removePlan(plan);"
                     class="plan-remove"
                     type="button"
                 >
-                    <span><i class="fa fa-close"></i>&nbsp; Remove Plan</span>
+                    <span><i class="fa fa-close"></i>&nbsp; Not Interested</span>
                 </button>
             </div>
         </div>

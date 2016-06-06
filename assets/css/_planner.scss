@@ -47,35 +47,34 @@
 
 .plan
 {
-    border-bottom: 1px solid #eee;
     display: block;
     padding: 2em;
     position: relative;
 
+    & + .plan
+    {
+        border-top: 1px solid #f0f0f0;
+    }
+
     & .plan-place
     {
         font-size: 22px;
-
-        &:hover
-        {
-            cursor: pointer;
-        }
     }
 
     textarea
     {
-        background: transparent;
-        border: 1px solid #eee;
+        background: #f4f4f4;
+        border: 1px solid #f4f4f4;
         line-height: 1.5em;
-        height: 8em;
+        height: 5em;
         padding: 1em;
         resize: none;
         width: 100%;
 
         &:focus
         {
-            background: #f4f4f4;
-            border-color: #cccccc;
+            border: 1px solid #cccccc;
+            height: 10em;
         }
     }
 
