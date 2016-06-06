@@ -17,9 +17,15 @@ gulp.task('clean', function () {
 });
 
 gulp.task('ts', function () {
+    var webpackConfig;
+
+    webpackConfig = (process.env.NODE_ENV === 'production')
+                  ? require('./client/webpack.prod.js')
+                  : require('./client/webpack.dev.js');
+
     gulp.src(['client/**/*.ts'])
         .pipe(plumber())
-        .pipe(webpack(require('./client/webpack.config.js')))
+        .pipe(webpack(webpackConfig))
         .pipe(gulp.dest('public/js'))
         .pipe(browserSync.reload({stream: true}));
 });
@@ -39,16 +45,6 @@ gulp.task('css', function () {
         .pipe(cleanCss())
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest('public/css'))
-        .pipe(browserSync.reload({stream: true}));
-});
-
-gulp.task('js', function () {
-    gulp.src(['assets/js/**/*.js', '!assets/js/**/*.min.js'])
-        .pipe(plumber())
-        .pipe(concat('main.js'))
-        .pipe(uglify())
-        .pipe(rename({ suffix: '.min' }))
-        .pipe(gulp.dest('public/js'))
         .pipe(browserSync.reload({stream: true}));
 });
 
@@ -89,6 +85,7 @@ gulp.task('env:prod', function () {
     return process.env.NODE_ENV = 'production';
 });
 
-gulp.task('deploy', ['env:prod', 'clean', 'ts', 'css', 'fonts', 'server']);
+gulp.task('build:dev', ['env:dev', 'clean', 'ts', 'css', 'fonts']);
+gulp.task('build:prod', ['env:prod', 'clean', 'ts', 'css', 'fonts']);
 
 gulp.task('default', ['clean', 'ts', 'css', 'fonts', 'sync', 'watch']);
