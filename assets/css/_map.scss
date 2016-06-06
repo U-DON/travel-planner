@@ -99,4 +99,9 @@
     padding: 1em;
     text-align: center;
     width: 100%;
+
+    &.plan-delete
+    {
+        background: $rusty-red;
+    }
 }

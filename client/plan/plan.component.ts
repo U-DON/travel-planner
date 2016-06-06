@@ -54,7 +54,7 @@ import { PlanService } from "./plan.service";
             <div class="plan-detail">
                 <button
                     (click)="_planService.removePlan(plan);"
-                    class="plan-remove"
+                    class="plan-delete"
                     type="button"
                 >
                     <span><i class="fa fa-close"></i>&nbsp; Not Interested</span>

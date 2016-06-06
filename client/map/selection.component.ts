@@ -47,8 +47,13 @@ import { PlanService } from "../plan/plan.service";
                     </span>
                 </div>
             </div>
-            <button id="selection-button" (click)="changePlanStatus()" type="button">
-                {{ plan.status ? 'Remove From Plan' : 'Add To Plan' }}
+            <button
+                id="selection-button"
+                [class.plan-delete]="plan.status"
+                (click)="changePlanStatus()"
+                type="button"
+            >
+                {{ plan.status ? 'Not Interested' : 'Interested' }}
             </button>
         </div>
     `
