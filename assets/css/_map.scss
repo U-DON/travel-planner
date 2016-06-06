@@ -68,28 +68,9 @@
 {
     padding: 2em 1.5em;
 
-    .plan-summary
+    & .plan-summary
     {
-        margin-bottom: 2.5em;
-    }
-
-    & .plan-main-detail
-    {
-        display: flex;
-        align-items: center;
-
-        & span + span
-        {
-            margin-left: 1em;
-        }
-    }
-
-    & .plan-detail
-    {
-        display: flex;
-        line-height: 1.5em;
-        margin-top: 1em;
-        position: relative;
+        margin-bottom: 1.5em;
     }
 
     & .plan-detail-label
@@ -97,16 +78,14 @@
         align-items: center;
         display: flex;
         font-size: 16px;
+        height: 24px;
         justify-content: center;
-        height: 1.5em;
         width: 1em;
     }
 
     & .plan-detail-text
     {
-        align-items: center;
         color: #888888;
-        display: flex;
         flex: 1;
         margin-left: 1.5em;
     }

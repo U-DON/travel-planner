@@ -106,6 +106,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         // Upon getting the callback from Google Maps API,
         // set up the map and controls and their listeners.
 
+        // TODO: Disable zoom and street view controls and create custom
+        // controls so that control margins can be consistent.
         let mapOptions: google.maps.MapOptions = {
             center: new google.maps.LatLng(37.09024, -95.712891),
             mapTypeId: google.maps.MapTypeId.ROADMAP,

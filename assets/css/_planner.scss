@@ -30,33 +30,103 @@
     background: #fefefe;
     height: 100%;
     overflow: auto;
+
+    & .plan-detail
+    {
+        display: flex;
+        align-items: center;
+        margin: 0;
+
+        & + .plan-detail
+        {
+            margin-left: 1em;
+        }
+    }
+
+    & .plan-detail-text
+    {
+        background: #eee;
+        padding: 1em;
+    }
 }
 
 .plan
 {
-    background: #eee;
-    cursor: pointer;
-    margin: 1em;
+    border-bottom: 1px solid #eee;
     padding: 2em;
     position: relative;
 
+    & .plan-place
+    {
+        font-size: 22px;
+
+        &:hover
+        {
+            cursor: pointer;
+        }
+    }
+
+    textarea
+    {
+        background: transparent;
+        border: 1px solid #eee;
+        line-height: 1.5em;
+        height: 8em;
+        padding: 1em;
+        resize: none;
+        width: 100%;
+
+        &:focus
+        {
+            background: #f4f4f4;
+            border-color: #cccccc;
+        }
+    }
+
     button
     {
-        background: #444444;
         border: 0;
-        color: #ffffff;
-        float: right;
-        font-size: 12px;
         padding: 1em;
-        position: absolute;
-        right: 0;
-        top: 0;
     }
+}
+
+.plan-place
+{
+    margin: 0;
+}
+
+.plan-detail-group
+{
+    display: flex;
+    align-items: center;
+
+    & .plan-detail
+    {
+        margin: 1em 0;
+        line-height: 1em;
+    }
+}
+
+.plan-detail
+{
+    display: flex;
+    line-height: 24px;
+    margin-top: 1em;
+}
+
+.plan-description
+{
+    margin: 1em auto;
 }
 
 .plan-rating
 {
     color: $yellow;
+
+    & + .plan-price
+    {
+        margin-left: 1em;
+    }
 }
 
 .plan-price
@@ -64,3 +134,28 @@
     color: $green;
 }
 
+.plan-votes
+{
+    & .plan-detail-label
+    {
+        background: #888;
+        color: #ffffff;
+        padding: 1em;
+
+        &:hover
+        {
+            background: $green;
+        }
+    }
+}
+
+.plan-remove
+{
+    background: #888888;
+    color: #ffffff;
+
+    &:hover
+    {
+        background: $rusty-red;
+    }
+}

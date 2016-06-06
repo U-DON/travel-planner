@@ -24,10 +24,10 @@ import { PlanService } from "../plan/plan.service";
             </div>
             <div id="selection-info">
                 <div class="plan-summary">
-                    <h2>{{ plan.place.name }}</h2>
-                    <div *ngIf="plan.place.rating || plan.place.priceLevel" class="plan-main-detail">
-                        <span [innerHTML]="plan.place.rating | toRating" class="plan-rating"></span>
-                        <span [innerHTML]="plan.place.priceLevel | toCurrency" class="plan-price"></span>
+                    <h2 class="plan-place">{{ plan.place.name }}</h2>
+                    <div *ngIf="plan.place.rating || plan.place.priceLevel" class="plan-detail-group">
+                        <span [innerHTML]="plan.place.rating | toRating" class="plan-detail plan-rating"></span>
+                        <span [innerHTML]="plan.place.priceLevel | toCurrency" class="plan-detail plan-price"></span>
                     </div>
                 </div>
                 <div *ngIf="plan.place.address" class="plan-detail">
