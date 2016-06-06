@@ -1,7 +1,11 @@
 # Vim swap files
 *.swp
 
+# Typings for TypeScript
+typings
+
 # Build output folders for CSS and JS
+public/fonts
 public/css
 public/js
 
