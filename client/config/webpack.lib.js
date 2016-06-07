@@ -26,21 +26,10 @@ module.exports = {
         path: './assets/lib/'
     },
 
-    resolve: {
-        extensions: ['', '.js', '.ts']
-    },
-
-    module: {
-        loaders: [
-            {
-                test: /\.ts$/,
-                loader: 'ts'
-            }
-        ]
-    },
-
     plugins: [
         new webpack.DllPlugin({
+            // Context is where Webpack was invoked.
+            // Seems to differ from webpack-stream context.
             path: './assets/lib/[name]-manifest.json',
             name: '[name]'
         }),

@@ -4,7 +4,7 @@ module.exports = {
     context: __dirname,
 
     entry: {
-        app: './boot.ts'
+        app: '../boot.ts'
     },
 
     output: {
@@ -27,13 +27,12 @@ module.exports = {
     plugins: [
         new webpack.DllReferencePlugin({
             context: '.',
-            manifest: require('../assets/lib/polyfills-manifest.json')
+            manifest: require('../../assets/lib/polyfills-manifest.json')
         }),
         new webpack.DllReferencePlugin({
             context: '.',
-            manifest: require('../assets/lib/vendor-manifest.json')
+            manifest: require('../../assets/lib/vendor-manifest.json')
         }),
-        new webpack.NoErrorsPlugin(),
-        new webpack.optimize.OccurrenceOrderPlugin()
+        new webpack.NoErrorsPlugin()
     ]
 };

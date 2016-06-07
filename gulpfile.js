@@ -3,8 +3,10 @@ var autoprefixer = require('gulp-autoprefixer'),
         cleanCss = require('gulp-clean-css'),
           concat = require('gulp-concat'),
              del = require('del'),
+              fs = require('fs'),
             gulp = require('gulp'),
          nodemon = require('gulp-nodemon'),
+            path = require('path'),
          plumber = require('gulp-plumber'),
             sass = require('gulp-sass'),
           rename = require('gulp-rename'),
@@ -16,10 +18,39 @@ gulp.task('clean', function () {
 });
 
 gulp.task('lib', function (done) {
+    var libDir = path.join(__dirname, 'assets/lib');
+    var libFiles = [
+        'polyfills.js',
+        'polyfills-manifest.json',
+        'vendor.js',
+        'vendor-manifest.json'
+    ];
+
+    var libsExist =
+        libFiles.every(function (file) {
+            var exists = true;
+            try {
+                fs.accessSync(path.join(libDir, file), fs.F_OK);
+            } catch (e) {
+                exists = false;
+            }
+            return exists;
+        });
+
+    if (libsExist) {
+        console.log("Angular DLLs exist. Skipping compilation.");
+        done();
+        return;
+    }
+
     var webpack = require('webpack');
-    var webpackConfig = require('./client/webpack.lib.js');
+    var webpackConfig = require('./client/config/webpack.lib.js');
 
     webpack(webpackConfig, function (err, stats) {
+        if (err) {
+            console.log(err);
+        }
+
         done();
     });
 });
@@ -29,10 +60,10 @@ gulp.task('ts', ['lib'], function () {
     var webpackConfig;
 
     webpackConfig = (process.env.NODE_ENV === 'production')
-                  ? require('./client/webpack.prod.js')
-                  : require('./client/webpack.dev.js');
+                  ? require('./client/config/webpack.prod.js')
+                  : require('./client/config/webpack.dev.js');
 
-    gulp.src(['client/**/*.ts', '!client/lib/*.ts'])
+    gulp.src(['client/**/*.ts'])
         .pipe(plumber())
         .pipe(webpack(webpackConfig))
         .pipe(gulp.dest('public/js'))
@@ -72,7 +103,6 @@ gulp.task('sync', function () {
 
 gulp.task('watch', function () {
     gulp.watch('assets/css/**/*.scss', ['css']);
-    gulp.watch('assets/js/**/*.js', ['js']);
     gulp.watch('client/**/*.ts', ['ts']);
     gulp.watch('public/*.html', ['html']);
 });
