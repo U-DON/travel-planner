@@ -1,6 +1,9 @@
 # Vim swap files
 *.swp
 
+# Output folder for DLLs.
+assets/lib
+
 # Typings for TypeScript
 typings
 
