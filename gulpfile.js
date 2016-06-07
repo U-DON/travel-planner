@@ -9,21 +9,30 @@ var autoprefixer = require('gulp-autoprefixer'),
             sass = require('gulp-sass'),
           rename = require('gulp-rename'),
               ts = require('gulp-typescript'),
-          uglify = require('gulp-uglify'),
-         webpack = require('webpack-stream');
+          uglify = require('gulp-uglify');
 
 gulp.task('clean', function () {
     del(['public/css/*', 'public/js/*']);
 });
 
-gulp.task('ts', function () {
+gulp.task('lib', function (done) {
+    var webpack = require('webpack');
+    var webpackConfig = require('./client/webpack.lib.js');
+
+    webpack(webpackConfig, function (err, stats) {
+        done();
+    });
+});
+
+gulp.task('ts', ['lib'], function () {
+    var webpack = require('webpack-stream');
     var webpackConfig;
 
     webpackConfig = (process.env.NODE_ENV === 'production')
                   ? require('./client/webpack.prod.js')
                   : require('./client/webpack.dev.js');
 
-    gulp.src(['client/**/*.ts'])
+    gulp.src(['client/**/*.ts', '!client/lib/*.ts'])
         .pipe(plumber())
         .pipe(webpack(webpackConfig))
         .pipe(gulp.dest('public/js'))
