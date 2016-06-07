@@ -143,8 +143,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     createMarker(icon: MapMarker, plan: Plan): google.maps.Marker {
         let position = plan.place.geometry.location;
 
-        // TODO: Consider using LatLng URL values (comma-delimited pairs) as keys
-        //       for plan markers in case not every location has a place id.
         console.log("Creating marker: " + position.toUrlValue() + " (URL value)\n"
                                         + plan.place.placeId + " (place id)");
 

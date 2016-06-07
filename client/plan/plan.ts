@@ -31,7 +31,6 @@ export class Place {
             let photo = this.photos[0];
 
             // Scale photo according to its dimensions.
-            // TODO: Increase size of smaller images;
             if (photo.width > photo.height) {
                 photoUrl = photo.getUrl({ maxHeight: 320 });
             } else {
