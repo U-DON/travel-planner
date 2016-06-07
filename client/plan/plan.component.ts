@@ -51,6 +51,12 @@ import { PlanService } from "./plan.service";
                 </label>
                 <span class="plan-detail-text">{{ plan.votes }} votes</span>
             </div>
+            <div class="plan-detail plan-comments">
+                <button class="plan-detail-label" type="button">
+                    <i class="fa fa-comments"></i>
+                </button>
+                <span class="plan-detail-text">{{ plan.comments.length }} comments</span>
+            </div>
             <div class="plan-detail">
                 <button
                     (click)="_planService.removePlan(plan);"
