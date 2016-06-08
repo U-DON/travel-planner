@@ -9,14 +9,15 @@ import {
     ViewChild
 } from "@angular/core";
 
-import { ReverseListPipe } from "../common/reverse-list.pipe";
+import { CommentsComponent } from "./comments.component";
 import { CurrencyPipe, RatingPipe } from "../plan/pipes";
 import { Plan, PlanStatus } from "../plan/plan";
 import { PlanService } from "../plan/plan.service";
 
 @Component({
     selector: "selection",
-    pipes: [CurrencyPipe, RatingPipe, ReverseListPipe],
+    directives: [CommentsComponent],
+    pipes: [CurrencyPipe, RatingPipe],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <div id="selection">
@@ -55,19 +56,7 @@ import { PlanService } from "../plan/plan.service";
                         <span>Comments</span><span *ngIf="plan.comments.length">({{ plan.comments.length }})</span>
                     </div>
                 </div>
-                <form
-                    *ngIf="plan.status"
-                    (submit)="submitComment()"
-                    id="selection-comments"
-                >
-                    <div *ngIf="plan.comments.length" class="plan-comments">
-                        <p *ngFor="let comment of plan.comments | reverse" class="plan-comment">
-                            {{ comment }}
-                        </p>
-                    </div>
-                    <p *ngIf="!plan.comments.length" class="empty">No comments yet.</p>
-                    <input type="text" placeholder="Write a comment!" [(ngModel)]="comment" />
-                </form>
+                <comments [plan]="plan"></comments>
             </div>
             <button
                 id="selection-button"
@@ -87,7 +76,6 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
 
     @ViewChild("photo") photo: ElementRef;
 
-    comment: string = "";
     loading: boolean = false;
     panorama: google.maps.StreetViewPanorama;
 
@@ -182,14 +170,6 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
             this._planService.addPlan(this.plan);
         } else {
             this._planService.removePlan(this.plan);
-        }
-    }
-
-    submitComment () {
-        if (this.comment &&
-            this._planService.commentPlan(this.plan, this.comment))
-        {
-            this.comment = "";
         }
     }
 
