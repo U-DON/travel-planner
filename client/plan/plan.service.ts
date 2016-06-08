@@ -14,6 +14,7 @@ export class PlanService {
     planAdded = new EventEmitter<Plan>();
     planRemoved = new EventEmitter<Plan>();
     planSelected = new EventEmitter<Plan>();
+    planUpdated = new EventEmitter<Plan>();
 
     addPlan (plan: Plan) {
         console.log("PlanService.addPlan");
@@ -21,15 +22,22 @@ export class PlanService {
         this.planAdded.emit(plan);
     }
 
+    removePlan (plan: Plan) {
+        console.log("PlanService.removePlan");
+        plan.status = PlanStatus.NOT_INTERESTED;
+        this.planRemoved.emit(plan);
+    }
+
     selectPlan (plan: Plan) {
         console.log("PlanService.selectPlan");
         this.planSelected.emit(plan);
     }
 
-    removePlan (plan: Plan) {
-        console.log("PlanService.removePlan");
-        plan.status = PlanStatus.NOT_INTERESTED;
-        this.planRemoved.emit(plan);
+    commentPlan (plan: Plan, comment: string): boolean {
+        if (comment === "") return false;
+        plan.comments.push(comment);
+        this.planUpdated.emit(plan);
+        return true;
     }
 
 }

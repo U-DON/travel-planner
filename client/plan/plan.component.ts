@@ -3,7 +3,6 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    OnChanges,
     OnDestroy
 } from "@angular/core";
 
@@ -16,15 +15,15 @@ import { PlanService } from "./plan.service";
     changeDetection: ChangeDetectionStrategy.OnPush,
     pipes: [CurrencyPipe, RatingPipe],
     template: `
+        <div class="plan-place">
+            <a
+                (click)="$event.preventDefault(); _planService.selectPlan(plan);"
+                href="#{{ plan.place.placeId }}"
+            >
+                {{ plan.place.name }}
+            </a>
+        </div>
         <div class="plan-summary">
-            <div class="plan-place">
-                <a
-                    (click)="$event.preventDefault(); _planService.selectPlan(plan);"
-                    href="#{{ plan.place.placeId }}"
-                >
-                    {{ plan.place.name }}
-                </a>
-            </div>
             <div class="plan-description">
                 <textarea
                     #description
@@ -69,13 +68,25 @@ import { PlanService } from "./plan.service";
         </div>
     `
 })
-export class PlanComponent {
+export class PlanComponent implements OnDestroy {
 
     @Input() plan: Plan;
 
     voted: boolean = false;
 
-    constructor (private _planService: PlanService) {
+    private _planUpdatedSubscription: any;
+
+    constructor (private _changeDetector: ChangeDetectorRef,
+                 private _planService: PlanService)
+    {
+        this._planUpdatedSubscription =
+            this._planService.planUpdated.subscribe((plan: Plan) => {
+                this._changeDetector.markForCheck();
+            });
+    }
+
+    ngOnDestroy () {
+        this._planUpdatedSubscription.unsubscribe();
     }
 
     vote () {

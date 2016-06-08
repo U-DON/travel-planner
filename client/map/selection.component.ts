@@ -22,30 +22,51 @@ import { PlanService } from "../plan/plan.service";
             <div #photo id="selection-photo" [ngStyle]="{'background-image': plan.place.photoUrl()}">
                 <div *ngIf="loading"></div>
             </div>
-            <div id="selection-info">
-                <div class="plan-summary">
-                    <h2 class="plan-place">{{ plan.place.name }}</h2>
-                    <div *ngIf="plan.place.rating || plan.place.priceLevel" class="plan-detail-group">
-                        <span [innerHTML]="plan.place.rating | toRating" class="plan-detail plan-rating"></span>
-                        <span [innerHTML]="plan.place.priceLevel | toCurrency" class="plan-detail plan-price"></span>
+            <div id="selection-content">
+                <div class="plan-place">{{ plan.place.name }}</div>
+                <div id="selection-info">
+                    <div class="plan-summary">
+                        <div *ngIf="plan.place.rating || plan.place.priceLevel" class="plan-detail-group">
+                            <span [innerHTML]="plan.place.rating | toRating" class="plan-detail plan-rating"></span>
+                            <span [innerHTML]="plan.place.priceLevel | toCurrency" class="plan-detail plan-price"></span>
+                        </div>
+                    </div>
+                    <div *ngIf="plan.place.address" class="plan-detail">
+                        <span class="plan-detail-label"><i class="fa fa-map-marker"></i></span>
+                        <span class="plan-detail-text">{{ plan.place.address }}</span>
+                    </div>
+                    <div *ngIf="plan.place.phoneNumber" class="plan-detail">
+                        <span class="plan-detail-label"><i class="fa fa-phone"></i></span>
+                        <span class="plan-detail-text">{{ plan.place.phoneNumber }}</span>
+                    </div>
+                    <div *ngIf="plan.place.website" class="plan-detail">
+                        <span class="plan-detail-label"><i class="fa fa-external-link"></i></span>
+                        <span class="plan-detail-text">
+                            <a [href]="plan.place.website" target="_blank">
+                                {{ plan.place.website }}
+                            </a>
+                        </span>
                     </div>
                 </div>
-                <div *ngIf="plan.place.address" class="plan-detail">
-                    <span class="plan-detail-label"><i class="fa fa-map-marker"></i></span>
-                    <span class="plan-detail-text">{{ plan.place.address }}</span>
+                <div id="selection-sections">
+                    <div *ngIf="plan.status" class="selection-section-tab">
+                        <i class="fa fa-lg fa-comments"></i>
+                        <span>Comments</span><span *ngIf="plan.comments.length">({{ plan.comments.length }})</span>
+                    </div>
                 </div>
-                <div *ngIf="plan.place.phoneNumber" class="plan-detail">
-                    <span class="plan-detail-label"><i class="fa fa-phone"></i></span>
-                    <span class="plan-detail-text">{{ plan.place.phoneNumber }}</span>
-                </div>
-                <div *ngIf="plan.place.website" class="plan-detail">
-                    <span class="plan-detail-label"><i class="fa fa-external-link"></i></span>
-                    <span class="plan-detail-text">
-                        <a [href]="plan.place.website" target="_blank">
-                            {{ plan.place.website }}
-                        </a>
-                    </span>
-                </div>
+                <form
+                    *ngIf="plan.status"
+                    (submit)="submitComment()"
+                    id="selection-comments"
+                >
+                    <div *ngIf="plan.comments.length" class="plan-comments">
+                        <p *ngFor="let comment of plan.comments" class="plan-comment">
+                            {{ comment }}
+                        </p>
+                    </div>
+                    <p *ngIf="!plan.comments.length" class="empty">No comments yet.</p>
+                    <input type="text" placeholder="Write a comment!" [(ngModel)]="comment" />
+                </form>
             </div>
             <button
                 id="selection-button"
@@ -65,6 +86,7 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
 
     @ViewChild("photo") photo: ElementRef;
 
+    comment: string = "";
     loading: boolean = false;
     panorama: google.maps.StreetViewPanorama;
 
@@ -159,6 +181,14 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
             this._planService.addPlan(this.plan);
         } else {
             this._planService.removePlan(this.plan);
+        }
+    }
+
+    submitComment () {
+        if (this.comment &&
+            this._planService.commentPlan(this.plan, this.comment))
+        {
+            this.comment = "";
         }
     }
 
