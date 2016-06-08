@@ -14,7 +14,7 @@
 
 .control
 {
-    font-size: 14px;
+    font-size: 13px;
     padding: 0 0 0 $shadow-blur-radius;
     // Allow clicking through the div as it will otherwise cover the map.
     pointer-events: none;
@@ -35,7 +35,7 @@
     height: 3em;
     margin-bottom: 0;
     padding: 0 1em;
-    width: 480px;
+    width: 420px;
 }
 
 #selection
@@ -43,14 +43,13 @@
     box-sizing: border-box;
     background: #fefefe;
     box-shadow: 0 $shadow-offset $shadow-blur-radius rgba(0, 0, 0, 0.25);
-    font-size: 14px;
     max-height: 90vh;
     margin-top: 1em;
     overflow: auto;
     padding: 0 8px;
     border-bottom: 8px solid #fefefe;
     border-top: 8px solid #fefefe;
-    width: 480px;
+    width: 420px;
 }
 
 #selection-photo
@@ -59,7 +58,7 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 320px;
+    height: 240px;
     overflow: hidden;
 }
 
@@ -93,9 +92,8 @@
 
     & .plan-detail-label
     {
-        font-size: 16px;
         height: 24px;
-        width: 1em;
+        width: 1.5em;
     }
 
     & .plan-detail-text

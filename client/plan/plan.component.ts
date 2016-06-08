@@ -76,6 +76,8 @@ export class PlanComponent implements OnDestroy {
 
     private _planUpdatedSubscription: any;
 
+    // TODO: Highlight comments button when there are unread comments.
+
     constructor (private _changeDetector: ChangeDetectorRef,
                  private _planService: PlanService)
     {

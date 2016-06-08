@@ -33,15 +33,15 @@ import { PlanService } from "../plan/plan.service";
                         </div>
                     </div>
                     <div *ngIf="plan.place.address" class="plan-detail">
-                        <span class="plan-detail-label"><i class="fa fa-map-marker"></i></span>
+                        <span class="plan-detail-label"><i class="fa fa-lg fa-map-marker"></i></span>
                         <span class="plan-detail-text">{{ plan.place.address }}</span>
                     </div>
                     <div *ngIf="plan.place.phoneNumber" class="plan-detail">
-                        <span class="plan-detail-label"><i class="fa fa-phone"></i></span>
+                        <span class="plan-detail-label"><i class="fa fa-lg fa-phone"></i></span>
                         <span class="plan-detail-text">{{ plan.place.phoneNumber }}</span>
                     </div>
                     <div *ngIf="plan.place.website" class="plan-detail">
-                        <span class="plan-detail-label"><i class="fa fa-external-link"></i></span>
+                        <span class="plan-detail-label"><i class="fa fa-lg fa-external-link"></i></span>
                         <span class="plan-detail-text">
                             <a [href]="plan.place.website" target="_blank">
                                 {{ plan.place.website }}

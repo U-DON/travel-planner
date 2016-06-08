@@ -23,7 +23,7 @@ import { PlanService } from "./plan.service";
             flex-direction: column;
             height: 100vh;
             position: relative;
-            width: 540px;
+            width: 480px;
             z-index: 1;
         }
     `],
