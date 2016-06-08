@@ -9,13 +9,14 @@ import {
     ViewChild
 } from "@angular/core";
 
+import { ReverseListPipe } from "../common/reverse-list.pipe";
 import { CurrencyPipe, RatingPipe } from "../plan/pipes";
 import { Plan, PlanStatus } from "../plan/plan";
 import { PlanService } from "../plan/plan.service";
 
 @Component({
     selector: "selection",
-    pipes: [CurrencyPipe, RatingPipe],
+    pipes: [CurrencyPipe, RatingPipe, ReverseListPipe],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <div id="selection">
@@ -60,7 +61,7 @@ import { PlanService } from "../plan/plan.service";
                     id="selection-comments"
                 >
                     <div *ngIf="plan.comments.length" class="plan-comments">
-                        <p *ngFor="let comment of plan.comments" class="plan-comment">
+                        <p *ngFor="let comment of plan.comments | reverse" class="plan-comment">
                             {{ comment }}
                         </p>
                     </div>
