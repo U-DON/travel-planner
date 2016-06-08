@@ -28,8 +28,8 @@ import { PlanService } from "../plan/plan.service";
                 <div id="selection-info">
                     <div class="plan-summary">
                         <div *ngIf="plan.place.rating || plan.place.priceLevel" class="plan-detail-group">
-                            <span [innerHTML]="plan.place.rating | toRating" class="plan-detail plan-rating"></span>
-                            <span [innerHTML]="plan.place.priceLevel | toCurrency" class="plan-detail plan-price"></span>
+                            <span *ngIf="plan.place.rating" [innerHTML]="plan.place.rating | toRating" class="plan-detail plan-rating"></span>
+                            <span *ngIf="plan.place.priceLevel" [innerHTML]="plan.place.priceLevel | toCurrency" class="plan-detail plan-price"></span>
                         </div>
                     </div>
                     <div *ngIf="plan.place.address" class="plan-detail">
