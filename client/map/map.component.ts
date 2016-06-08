@@ -50,6 +50,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     map: google.maps.Map;
     placeMarkers: Map<string, google.maps.Marker>;
+    placesService: google.maps.places.PlacesService;
     planMarkers: Map<string, google.maps.Marker>;
     searchBox: google.maps.places.SearchBox;
     selectedMarker: google.maps.Marker;
@@ -125,6 +126,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         });
 
         this.searchBox.addListener("places_changed", this.onPlacesChanged.bind(this));
+
+        this.placesService = new google.maps.places.PlacesService(this.map);
     }
 
     clearPlaceMarkers () {
@@ -274,12 +277,19 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             this.selectedMarker.set("focused", false);
         }
 
-        this.selectedMarker = marker;
-
         if (marker) {
+            // Fetch more details about the place associated with the plan.
+            // When the information is fetched, re-select the marker.
+            if (!marker.get("detailed")) {
+                this.fetchPlaceDetails(marker);
+                return;
+            }
+
             marker.set("focused", true);
             this.map.panTo(marker.getPosition());
         }
+
+        this.selectedMarker = marker;
 
         this._zone.run(() => {
             this.selection = marker ? marker.get("plan") : null;
@@ -308,10 +318,28 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
         // Automatically show the place info if the search returned only one result.
         if (this.placeMarkers.size === 1) {
-            this.selectMarker(this.placeMarkers.values().next().value);
+            let marker = this.placeMarkers.values().next().value;
+            this.selectMarker(marker);
         }
 
         this.map.fitBounds(bounds);
+    }
+
+    fetchPlaceDetails (marker: google.maps.Marker) {
+        let plan = marker.get("plan");
+        this.placesService.getDetails({
+            placeId: plan.place.placeId
+        }, (place: google.maps.places.PlaceResult,
+            status: google.maps.places.PlacesServiceStatus) =>
+        {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                plan.place = new Place(place);
+                marker.set("detailed", true);
+                this.selectMarker(marker);
+            } else {
+                console.error("Error fetching place details");
+            }
+        });
     }
 
 }
