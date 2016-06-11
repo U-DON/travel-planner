@@ -1,3 +1,7 @@
+/***********
+ * General *
+ ***********/
+
 #planner-container
 {
     box-shadow: $shadow-offset 0 $shadow-blur-radius rgba(0, 0, 0, 0.25);
@@ -47,34 +51,20 @@
 {
     display: block;
     padding: 2em;
-    position: relative;
+
+    & .plan-delete
+    {
+        padding: 1em;
+    }
 
     & + .plan
     {
         border-top: 1px solid #f0f0f0;
     }
 
-    textarea
-    {
-        background: #f4f4f4;
-        border: 1px solid #f4f4f4;
-        line-height: 1.5em;
-        height: 5em;
-        padding: 1em;
-        resize: none;
-        width: 100%;
-
-        &:focus
-        {
-            border: 1px solid #cccccc;
-            height: 10em;
-        }
-    }
-
     button
     {
         border: 0;
-        padding: 1em;
     }
 }
 
@@ -92,14 +82,12 @@
     & .plan-detail
     {
         margin: 1em 0;
-        line-height: 1em;
     }
 }
 
 .plan-detail
 {
     display: flex;
-    line-height: 24px;
     margin-top: 1em;
 }
 
@@ -110,24 +98,50 @@
     justify-content: center;
 }
 
+.plan-detail-text
+{
+    word-wrap: break-word;
+}
+
+/*************
+ * Plan Item *
+ *************/
+
 .plan-description
 {
-    margin: 1.5em auto;
-}
+    background: #f6f6f6;
+    box-sizing: border-box;
+    color: #666666;
+    margin: 2em auto;
 
-.plan-rating
-{
-    color: $yellow;
-
-    & + .plan-price
+    .plan-detail-text
     {
-        margin-left: 1em;
-    }
-}
+        border-left: 4px solid #dddddd;
+        cursor: pointer;
+        padding: 1em;
 
-.plan-price
-{
-    color: $green;
+        &:hover
+        {
+            border-left: 4px solid $orange;
+        }
+
+        & p.empty
+        {
+            color: #aaaaaa;
+        }
+    }
+
+    // TODO: Transition animation for increase in size.
+    textarea
+    {
+        background: transparent;
+        border: 0;
+        border-left: 4px solid $orange;
+        color: #888888;
+        padding: 1em;
+        resize: none;
+        width: 100%;
+    }
 }
 
 .plan-votes
@@ -161,7 +175,7 @@
 {
     & .plan-detail-label
     {
-        background: #999999;
+        background: #aaaaaa;
         color: #ffffff;
         cursor: pointer;
         padding: 1em;
@@ -175,9 +189,28 @@
     }
 }
 
+/******************
+ * Plan Selection *
+ ******************/
+
+.plan-rating
+{
+    color: $yellow;
+
+    & + .plan-price
+    {
+        margin-left: 1em;
+    }
+}
+
+.plan-price
+{
+    color: $green;
+}
+
 .plan-delete
 {
-    background: #999999;
+    background: #aaaaaa;
     color: #ffffff;
 
     &:hover

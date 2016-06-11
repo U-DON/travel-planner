@@ -2,17 +2,60 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    Directive,
+    ElementRef,
+    EventEmitter,
+    HostListener,
     Input,
-    OnDestroy
+    OnDestroy,
+    Output,
+    Renderer
 } from "@angular/core";
 
 import { CurrencyPipe, RatingPipe } from "./pipes";
 import { Plan } from "./plan";
 import { PlanService } from "./plan.service";
 
+@Directive({
+    selector: "textarea"
+})
+class PlanDescription {
+
+    // Angular 2 bug causes fast typing to jump cursor to the end of input.
+    // Therefore, not using [(ngModel)] for plan description.
+    // https://github.com/angular/angular/issues/7822
+
+    // Auto-resizing technique borrowed from angular2-autosize by Steve Papa.
+    // https://github.com/stevepapa/angular2-autosize
+    @HostListener("input", ["$event.target"])
+    onInput (textArea: HTMLTextAreaElement) {
+        this.resize();
+    }
+
+    nativeElement: HTMLUnknownElement;
+
+    constructor (public renderer: Renderer, public elementRef: ElementRef) {}
+
+    ngOnInit () {
+        // Focus plan description input when it appears.
+        // http://stackoverflow.com/a/34573219/1070621
+        this.nativeElement = this.elementRef.nativeElement;
+        this.renderer.invokeElementMethod(this.nativeElement, "focus", []);
+        this.resize();
+    }
+
+    resize () {
+        this.nativeElement.style.overflow = "hidden";
+        this.nativeElement.style.height = "auto";
+        this.nativeElement.style.height = this.nativeElement.scrollHeight + "px";
+    }
+
+}
+
 @Component({
     selector: "plan",
     changeDetection: ChangeDetectionStrategy.OnPush,
+    directives: [PlanDescription],
     pipes: [CurrencyPipe, RatingPipe],
     template: `
         <div class="plan-place">
@@ -25,12 +68,24 @@ import { PlanService } from "./plan.service";
         </div>
         <div class="plan-summary">
             <div class="plan-description">
+                <div
+                    *ngIf="!editingDescription"
+                    (click)="$event.preventDefault(); editingDescription = true"
+                    class="plan-detail-text"
+                >
+                    <p [class.empty]="!plan.description">
+                        {{ plan.description ? plan.description : "Write a description!" }}
+                    </p>
+                </div>
                 <textarea
-                    #description
-                    [(ngModel)]="plan.description"
-                    (keydown.enter)="$event.preventDefault(); description.blur();"
+                    #planDescription
+                    *ngIf="editingDescription"
+                    [ngModel]="plan.description"
+                    (blur)="editingDescription = false; plan.description = planDescription.value;"
+                    (keydown.enter)="$event.preventDefault(); planDescription.blur();"
                     name="description"
                     placeholder="Write a description!"
+                    rows="1"
                 >
                 </textarea>
             </div>
@@ -72,6 +127,7 @@ export class PlanComponent implements OnDestroy {
 
     @Input() plan: Plan;
 
+    editingDescription: boolean = false;
     voted: boolean = false;
 
     private _planUpdatedSubscription: any;

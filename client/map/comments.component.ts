@@ -1,6 +1,5 @@
 import {
     AfterViewChecked,
-    ChangeDetectionStrategy,
     Component,
     ElementRef,
     Input,
