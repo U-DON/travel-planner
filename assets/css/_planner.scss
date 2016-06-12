@@ -41,7 +41,7 @@
 
             & + .plan-detail
             {
-                margin-left: 1.5em;
+                margin-left: 2em;
             }
         }
     }
@@ -54,7 +54,7 @@
 
     & .plan-summary
     {
-        margin: 1em auto 1.5em;
+        margin: 2em auto;
     }
 
     & .plan-delete
@@ -93,7 +93,7 @@
 .plan-detail
 {
     display: flex;
-    margin-top: 1em;
+    margin-top: 1.5em;
 }
 
 .plan-detail-label
@@ -112,75 +112,77 @@
  * Plan Item *
  *************/
 
-.plan-description
+#plan-list
 {
-    background: #f6f6f6;
-
-    textarea
+    .plan-description
     {
-        background: transparent;
-        border: 0;
-        border-left: 4px solid #dddddd;
-        color: #666666;
-        outline: none;
-        padding: 1em;
-        resize: none;
-        width: 100%;
-
-        &:hover
+        textarea
         {
-            border-color: #cccccc;
-        }
+            background: #f6f6f6;
+            border: 0;
+            border-left: 4px solid #dddddd;
+            color: #666666;
+            outline: none;
+            padding: 1em;
+            resize: none;
+            width: 100%;
 
-        &:focus
-        {
-            border-color: $orange;
-        }
-    }
-}
+            &:hover
+            {
+                border-color: #cccccc;
+            }
 
-.plan-votes
-{
-    & input
-    {
-        display: none;
-
-        &:checked + label
-        {
-            background: $green;
+            &:focus
+            {
+                border-color: $orange;
+            }
         }
     }
 
-    & .plan-detail-label:hover
+    .plan-votes
     {
-        background: $green;
-    }
-}
+        & input
+        {
+            display: none;
 
-.plan-comments
-{
-    & .plan-detail-label:hover
-    {
-        background: $tan;
-    }
-}
+            &:checked + label
+            {
+                color: $green;
+            }
+        }
 
-.plan-votes,
-.plan-comments
-{
-    & .plan-detail-label
-    {
-        background: #bbbbbb;
-        color: #ffffff;
-        cursor: pointer;
-        padding: 10px;
+        & .plan-detail-label:hover
+        {
+            color: $green;
+        }
     }
 
-    & .plan-detail-text
+    .plan-comments
     {
-        background: #eeeeee;
-        color: #888888;
-        padding: 10px;
+        & .plan-detail-label:hover
+        {
+            color: $tan;
+        }
+    }
+
+    .plan-votes,
+    .plan-comments
+    {
+        display: flex;
+        align-items: center;
+
+        & .plan-detail-label
+        {
+            color: #bbbbbb;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        & .plan-detail-text
+        {
+            color: #666666;
+            margin-left: 1em;
+        }
     }
 }
 

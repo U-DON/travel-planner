@@ -88,14 +88,14 @@ class PlanDescription {
                     class="plan-detail-label"
                     htmlFor="{{ plan.place.placeId }}_vote"
                 >
-                    <i class="fa fa-check"></i>
+                    <i class="fa fa-lg fa-check"></i>
                 </label>
                 <span class="plan-detail-text">{{ plan.votes }} votes</span>
             </div>
             <div class="plan-detail plan-comments">
-                <button class="plan-detail-label" type="button">
-                    <i class="fa fa-comments"></i>
-                </button>
+                <span class="plan-detail-label">
+                    <i class="fa fa-lg fa-comments"></i>
+                </span>
                 <span class="plan-detail-text">{{ plan.comments.length }} comments</span>
             </div>
             <div class="plan-detail">
