@@ -125,7 +125,9 @@ export class PlanComponent implements OnDestroy {
     {
         this._planUpdatedSubscription =
             this._planService.planUpdated.subscribe((plan: Plan) => {
-                this._changeDetector.markForCheck();
+                if (plan === this.plan) {
+                    this._changeDetector.markForCheck();
+                }
             });
     }
 
