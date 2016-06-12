@@ -10,13 +10,19 @@ import {
 } from "@angular/core";
 
 import { CommentsComponent } from "./comments.component";
+import { ReviewsComponent } from "./reviews.component";
 import { CurrencyPipe, RatingPipe } from "../plan/pipes";
 import { Plan, PlanStatus } from "../plan/plan";
 import { PlanService } from "../plan/plan.service";
 
+enum SelectionSection {
+    REVIEWS,
+    COMMENTS
+}
+
 @Component({
     selector: "selection",
-    directives: [CommentsComponent],
+    directives: [CommentsComponent, ReviewsComponent],
     pipes: [CurrencyPipe, RatingPipe],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
@@ -50,13 +56,30 @@ import { PlanService } from "../plan/plan.service";
                         </span>
                     </div>
                 </div>
-                <div id="selection-sections">
-                    <div *ngIf="plan.status" class="selection-section-tab">
+                <div id="selection-section-tabs">
+                    <div
+                        *ngIf="plan.place.reviews"
+                        (click)="currentSection = selectionSection.REVIEWS"
+                        [class.selected-tab]="currentSection == selectionSection.REVIEWS"
+                        class="selection-section-tab"
+                    >
+                        <i class="fa fa-lg fa-star"></i>
+                        <span>Reviews</span>
+                    </div>
+                    <div
+                        *ngIf="plan.status"
+                        (click)="currentSection = selectionSection.COMMENTS"
+                        [class.selected-tab]="currentSection == selectionSection.COMMENTS"
+                        class="selection-section-tab"
+                    >
                         <i class="fa fa-lg fa-comments"></i>
-                        <span>Comments</span><span *ngIf="plan.comments.length">({{ plan.comments.length }})</span>
+                        <span>Comments</span>
                     </div>
                 </div>
-                <comments [plan]="plan"></comments>
+                <div id="selection-sections">
+                    <reviews *ngIf="currentSection == selectionSection.REVIEWS" [plan]="plan"></reviews>
+                    <comments *ngIf="currentSection == selectionSection.COMMENTS" [plan]="plan"></comments>
+                </div>
             </div>
             <button
                 id="selection-button"
@@ -76,6 +99,8 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
 
     @ViewChild("photo") photo: ElementRef;
 
+    selectionSection = SelectionSection;
+    currentSection: SelectionSection = SelectionSection.REVIEWS;
     loading: boolean = false;
     panorama: google.maps.StreetViewPanorama;
 
@@ -92,6 +117,8 @@ export class SelectionComponent implements AfterViewInit, OnChanges {
 
         this._planRemovedSubscription =
             this._planService.planRemoved.subscribe((plan: Plan) => {
+                // Upon removing the plan, comments are no longer available.
+                this.currentSection = SelectionSection.REVIEWS;
                 this._changeDetector.markForCheck();
             });
     }

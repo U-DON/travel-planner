@@ -65,23 +65,6 @@
 #selection-content
 {
     padding: 2em 1.5em;
-
-    & .selection-section-tab
-    {
-        justify-content: center;
-        background: #eee;
-        box-sizing: border-box;
-        display: inline-flex;
-        margin-top: 2em;
-        padding: 1em;
-        text-align: center;
-        width: 100%;
-
-        & > span
-        {
-            margin-left: 0.5em;
-        }
-    }
 }
 
 #selection-info
@@ -110,39 +93,72 @@
     }
 }
 
-#selection-comments
+#selection-section-tabs
 {
+    display: flex;
     border-top: 2px dotted #dddddd;
-    margin: 0;
-    margin-top: 2em;
+    margin: 2em 0;
     padding: 0;
     padding-top: 2em;
 
-    & .plan-comments
+    & .selection-section-tab
     {
-        max-height: 20vh;
-        overflow-y: auto;
+        align-items: center;
+        background: #eeeeee;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+        cursor: pointer;
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        padding: 1em;
 
-        & .plan-comment
+        &.selected-tab,
+        &:hover
         {
-            color: #666666;
-            margin: 0 ;
-            padding: 1em;
-            word-wrap: break-word;
+            border-color: #dddddd;
+        }
 
-            &:nth-child(2n)
-            {
-                background: $sandy-tan;
-            }
+        & > span
+        {
+            margin-left: 0.75em;
+        }
 
-            &:nth-child(2n+1)
-            {
-                background: $tan;
-            }
+        & + .selection-section-tab
+        {
+            margin-left: 1em;
+        }
+    }
+}
 
-            & + .plan-comment
-            {
-            }
+#selection-sections
+{
+    & p
+    {
+        color: #666666;
+        margin: 0 ;
+        padding: 1em;
+        word-wrap: break-word;
+
+        &:nth-child(2n)
+        {
+            background: $sandy-tan;
+        }
+
+        &:nth-child(2n+1)
+        {
+            background: $tan;
+        }
+
+        & + .plan-comment
+        {
+        }
+
+        &.empty
+        {
+            background: transparent;
+            margin: 0;
+            text-align: center;
         }
     }
 
@@ -158,14 +174,14 @@
             border-color: #bbbbbb;
         }
     }
-
-    & p.empty
-    {
-        margin: 0;
-        text-align: center;
-    }
 }
 
+#selection-reviews,
+#selection-comments .plan-comments
+{
+    max-height: 20vh;
+    overflow-y: auto;
+}
 
 #selection-button
 {

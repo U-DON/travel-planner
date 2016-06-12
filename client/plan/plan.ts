@@ -8,6 +8,7 @@ export class Place {
     placeId: string;
     priceLevel: number;
     rating: number;
+    reviews: google.maps.places.PlaceReview[];
     types: string[];
     website: string;
 
@@ -20,6 +21,7 @@ export class Place {
         this.placeId = place.place_id;
         this.priceLevel = place.price_level;
         this.rating = place.rating;
+        this.reviews = place.reviews;
         this.types = place.types;
         this.website = place.website;
     }
