@@ -37,10 +37,7 @@ class PlanDescription {
     constructor (public renderer: Renderer, public elementRef: ElementRef) {}
 
     ngOnInit () {
-        // Focus plan description input when it appears.
-        // http://stackoverflow.com/a/34573219/1070621
         this.nativeElement = this.elementRef.nativeElement;
-        this.renderer.invokeElementMethod(this.nativeElement, "focus", []);
         this.resize();
     }
 
@@ -68,21 +65,11 @@ class PlanDescription {
         </div>
         <div class="plan-summary">
             <div class="plan-description">
-                <div
-                    *ngIf="!editingDescription"
-                    (click)="$event.preventDefault(); editingDescription = true"
-                    class="plan-detail-text"
-                >
-                    <p [class.empty]="!plan.description">
-                        {{ plan.description ? plan.description : "Write a description!" }}
-                    </p>
-                </div>
                 <textarea
-                    #planDescription
-                    *ngIf="editingDescription"
+                    #description
                     [ngModel]="plan.description"
-                    (blur)="editingDescription = false; plan.description = planDescription.value;"
-                    (keydown.enter)="$event.preventDefault(); planDescription.blur();"
+                    (blur)="plan.description = description.value;"
+                    (keydown.enter)="$event.preventDefault(); description.blur();"
                     name="description"
                     placeholder="Write a description!"
                     rows="1"
@@ -127,7 +114,6 @@ export class PlanComponent implements OnDestroy {
 
     @Input() plan: Plan;
 
-    editingDescription: boolean = false;
     voted: boolean = false;
 
     private _planUpdatedSubscription: any;

@@ -52,9 +52,14 @@
     display: block;
     padding: 2em;
 
+    & .plan-summary
+    {
+        margin: 1em auto 1.5em;
+    }
+
     & .plan-delete
     {
-        padding: 1em;
+        padding: 10px;
     }
 
     & + .plan
@@ -110,37 +115,27 @@
 .plan-description
 {
     background: #f6f6f6;
-    box-sizing: border-box;
-    color: #666666;
-    margin: 2em auto;
 
-    .plan-detail-text
-    {
-        border-left: 4px solid #dddddd;
-        cursor: pointer;
-        padding: 1em;
-
-        &:hover
-        {
-            border-left: 4px solid $orange;
-        }
-
-        & p.empty
-        {
-            color: #aaaaaa;
-        }
-    }
-
-    // TODO: Transition animation for increase in size.
     textarea
     {
         background: transparent;
         border: 0;
-        border-left: 4px solid $orange;
-        color: #888888;
+        border-left: 4px solid #dddddd;
+        color: #666666;
+        outline: none;
         padding: 1em;
         resize: none;
         width: 100%;
+
+        &:hover
+        {
+            border-color: #cccccc;
+        }
+
+        &:focus
+        {
+            border-color: $orange;
+        }
     }
 }
 
@@ -175,17 +170,17 @@
 {
     & .plan-detail-label
     {
-        background: #aaaaaa;
+        background: #bbbbbb;
         color: #ffffff;
         cursor: pointer;
-        padding: 1em;
+        padding: 10px;
     }
 
     & .plan-detail-text
     {
-        background: #eee;
+        background: #eeeeee;
         color: #888888;
-        padding: 1em;
+        padding: 10px;
     }
 }
 
@@ -210,7 +205,7 @@
 
 .plan-delete
 {
-    background: #aaaaaa;
+    background: #bbbbbb;
     color: #ffffff;
 
     &:hover
