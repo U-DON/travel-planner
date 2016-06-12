@@ -128,6 +128,20 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.searchBox.addListener("places_changed", this.onPlacesChanged.bind(this));
 
         this.placesService = new google.maps.places.PlacesService(this.map);
+
+        this.setToCurrentLocation();
+    }
+
+    setToCurrentLocation () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                this.map.setOptions({
+                    center: new google.maps.LatLng(position.coords.latitude,
+                                                   position.coords.longitude),
+                    zoom: 15
+                });
+            });
+        }
     }
 
     clearPlaceMarkers () {
