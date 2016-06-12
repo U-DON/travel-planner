@@ -68,9 +68,10 @@
 
     & .selection-section-tab
     {
+        justify-content: center;
         background: #eee;
         box-sizing: border-box;
-        display: inline-block;
+        display: inline-flex;
         margin-top: 2em;
         padding: 1em;
         text-align: center;
@@ -92,11 +93,12 @@
 
     & .plan-detail
     {
-        line-height: 2;
+        line-height: 1.5;
     }
 
     & .plan-detail-label
     {
+        height: 1.5em;
         width: 1.5em;
     }
 
