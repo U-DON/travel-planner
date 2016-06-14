@@ -94,9 +94,12 @@ gulp.task('html', function () {
 });
 
 gulp.task('sync', function () {
+    var historyApiFallback = require('connect-history-api-fallback');
+
     browserSync({
         server: {
-            baseDir: './public'
+            baseDir: './public',
+            middleware: [historyApiFallback()]
         }
     });
 });
