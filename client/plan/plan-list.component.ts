@@ -65,10 +65,6 @@ export class PlanListComponent {
         this._planRemovedSubscription.unsubscribe();
     }
 
-    goBack () {
-        window.history.back();
-    }
-
     addPlan (plan: Plan): boolean {
         if (!this.plans.has(plan.place.placeId)) {
             this.plans.set(plan.place.placeId, plan);

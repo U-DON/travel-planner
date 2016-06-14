@@ -38,11 +38,18 @@ import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "@angular/route
                 <i class="fa fa fa-search"></i>
             </div>
         </div>
-        <a (click)="goBack()" id="back"><i class="fa fa-lg fa-long-arrow-left"></i>&nbsp;&nbsp; Back To Search Results</a>
+        <a (click)="$event.preventDefault(); goBack();" id="back" href="#back">
+            <i class="fa fa-lg fa-long-arrow-left"></i>&nbsp;&nbsp; Back To Search Results
+        </a>
         <plan-list></plan-list>
         <search-results></search-results>
         <router-outlet></router-outlet>
     `
 })
 export class PlannerComponent {
+
+    goBack () {
+        window.history.back();
+    }
+
 }
