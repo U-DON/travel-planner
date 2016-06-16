@@ -290,34 +290,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-    updatePlaces (places: google.maps.places.PlaceResult[]) {
-        if (places.length === 0) return;
-
-        this.clearPlaceMarkers();
-
-        let bounds = new google.maps.LatLngBounds();
-
-        places.forEach((place: google.maps.places.PlaceResult) => {
-            this.createPlaceMarker(place);
-
-            // Accommodate this place in the current map view.
-            // Only geocodes have viewport.
-            if (place.geometry.viewport) {
-                bounds.union(place.geometry.viewport);
-            } else {
-                bounds.extend(place.geometry.location);
-            }
-        });
-
-        // Automatically show the place info if the search returned only one result.
-        if (this.placeMarkers.size === 1) {
-            let marker = this.placeMarkers.values().next().value;
-            this.selectMarker(marker);
-        }
-
-        this.map.fitBounds(bounds);
-    }
-
     fetchPlaceDetails (marker: google.maps.Marker) {
         return new Promise((resolve, reject) => {
             if (!marker) {
@@ -341,6 +313,34 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                 }
             });
         });
+    }
+
+    updatePlaces (places: google.maps.places.PlaceResult[]) {
+        this.clearPlaceMarkers();
+
+        if (places.length === 0) return;
+
+        let bounds = new google.maps.LatLngBounds();
+
+        places.forEach((place: google.maps.places.PlaceResult) => {
+            this.createPlaceMarker(place);
+
+            // Accommodate this place in the current map view.
+            // Only geocodes have viewport.
+            if (place.geometry.viewport) {
+                bounds.union(place.geometry.viewport);
+            } else {
+                bounds.extend(place.geometry.location);
+            }
+        });
+
+        // Automatically show the place info if the search returned only one result.
+        if (this.placeMarkers.size === 1) {
+            let marker = this.placeMarkers.values().next().value;
+            this.selectMarker(marker);
+        }
+
+        this.map.fitBounds(bounds);
     }
 
 }
