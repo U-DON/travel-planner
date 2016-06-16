@@ -1,16 +1,70 @@
-/***********
- * General *
- ***********/
+/***********************
+ * Plan Items (Shared) *
+ ***********************/
 
-#planner-container
+.plan-place
 {
-    box-shadow: $shadow-offset 0 $shadow-blur-radius rgba(0, 0, 0, 0.25);
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    position: relative;
-    z-index: 1;
+    font-size: 20px;
+    margin: 0;
+
+    & > a
+    {
+        color: lighten($orange, 5);
+    }
 }
+
+.plan-detail-group
+{
+    display: flex;
+    align-items: center;
+}
+
+.plan-detail
+{
+    display: flex;
+}
+
+.plan-detail-label
+{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.plan-detail-text
+{
+    word-wrap: break-word;
+}
+
+.plan-rating
+{
+    color: $yellow;
+
+    & + .plan-price
+    {
+        margin-left: 1em;
+    }
+}
+
+.plan-price
+{
+    color: $green;
+}
+
+.plan-delete
+{
+    background: #bbbbbb;
+    color: #ffffff;
+
+    &:hover
+    {
+        background: $rusty-red;
+    }
+}
+
+/********
+ * Main *
+ ********/
 
 #logo
 {
@@ -114,42 +168,8 @@
     }
 }
 
-.plan-place
-{
-    font-size: 20px;
-    margin: 0;
-
-    & > a
-    {
-        color: lighten($orange, 5);
-    }
-}
-
-.plan-detail-group
-{
-    display: flex;
-    align-items: center;
-}
-
-.plan-detail
-{
-    display: flex;
-}
-
-.plan-detail-label
-{
-    align-items: center;
-    display: flex;
-    justify-content: center;
-}
-
-.plan-detail-text
-{
-    word-wrap: break-word;
-}
-
 /*************
- * Plan Item *
+ * Plan List *
  *************/
 
 #plan-list
@@ -157,7 +177,7 @@
     background: #fefefe;
     min-height: 100%;
 
-    .plan
+    & > .plan
     {
         display: block;
         padding: 2em;
@@ -167,9 +187,96 @@
             border-right: 4px solid $blue;
         }
 
-        .plan-summary
+        & + .plan
+        {
+            border-top: 1px solid #f0f0f0;
+        }
+
+        & > .plan-summary
         {
             margin: 2em auto;
+        }
+
+        .plan-detail-group
+        {
+            & > .plan-detail
+            {
+                & + .plan-detail
+                {
+                    margin-left: 2em;
+                }
+            }
+        }
+
+        .plan-description
+        {
+            textarea
+            {
+                background: #f6f6f6;
+                border: 0;
+                border-left: 4px solid #dddddd;
+                color: #666666;
+                outline: none;
+                padding: 1em;
+                resize: none;
+                width: 100%;
+
+                &:hover
+                {
+                    border-color: #cccccc;
+                }
+
+                &:focus
+                {
+                    border-color: lighten($blue, 20);
+                }
+            }
+        }
+
+        .plan-votes
+        {
+            & > input
+            {
+                display: none;
+
+                &:checked + label
+                {
+                    color: $green;
+                }
+            }
+
+            & > .plan-detail-label:hover
+            {
+                color: $green;
+            }
+        }
+
+        .plan-comments
+        {
+            & > .plan-detail-label:hover
+            {
+                color: $tan;
+            }
+        }
+
+        .plan-votes,
+        .plan-comments
+        {
+            display: flex;
+            align-items: center;
+
+            & > .plan-detail-label
+            {
+                color: #bbbbbb;
+                cursor: pointer;
+                font-size: 20px;
+            }
+
+            & > .plan-detail-text
+            {
+                color: #666666;
+                margin-left: 1em;
+            }
         }
 
         .plan-delete
@@ -177,96 +284,9 @@
             padding: 10px;
         }
 
-        & + .plan
-        {
-            border-top: 1px solid #f0f0f0;
-        }
-
         button
         {
             border: 0;
-        }
-    }
-
-    .plan-detail-group
-    {
-        .plan-detail
-        {
-            & + .plan-detail
-            {
-                margin-left: 2em;
-            }
-        }
-    }
-
-    .plan-description
-    {
-        textarea
-        {
-            background: #f6f6f6;
-            border: 0;
-            border-left: 4px solid #dddddd;
-            color: #666666;
-            outline: none;
-            padding: 1em;
-            resize: none;
-            width: 100%;
-
-            &:hover
-            {
-                border-color: #cccccc;
-            }
-
-            &:focus
-            {
-                border-color: lighten($blue, 20);
-            }
-        }
-    }
-
-    .plan-votes
-    {
-        & input
-        {
-            display: none;
-
-            &:checked + label
-            {
-                color: $green;
-            }
-        }
-
-        & .plan-detail-label:hover
-        {
-            color: $green;
-        }
-    }
-
-    .plan-comments
-    {
-        & .plan-detail-label:hover
-        {
-            color: $tan;
-        }
-    }
-
-    .plan-votes,
-    .plan-comments
-    {
-        display: flex;
-        align-items: center;
-
-        & .plan-detail-label
-        {
-            color: #bbbbbb;
-            cursor: pointer;
-            font-size: 20px;
-        }
-
-        & .plan-detail-text
-        {
-            color: #666666;
-            margin-left: 1em;
         }
     }
 }
@@ -280,21 +300,6 @@
     background: #fefefe;
     min-height: 100%;
 
-    .plan-detail-group
-    {
-        margin: 1em 0;
-
-        .plan-detail
-        {
-            margin-top: 0;
-        }
-    }
-
-    .plan-detail
-    {
-        margin-top: 1em;
-    }
-
     & > .search-result
     {
         padding: 2em;
@@ -303,34 +308,20 @@
         {
             border-top: 1px solid #f0f0f0;
         }
-    }
-}
-/******************
- * Plan Selection *
- ******************/
 
-.plan-rating
-{
-    color: $yellow;
+        .plan-detail-group
+        {
+            margin: 1em 0;
 
-    & + .plan-price
-    {
-        margin-left: 1em;
-    }
-}
+            .plan-detail
+            {
+                margin-top: 0;
+            }
+        }
 
-.plan-price
-{
-    color: $green;
-}
-
-.plan-delete
-{
-    background: #bbbbbb;
-    color: #ffffff;
-
-    &:hover
-    {
-        background: $rusty-red;
+        .plan-detail
+        {
+            margin-top: 1em;
+        }
     }
 }
