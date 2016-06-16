@@ -8,10 +8,12 @@ export class MapService {
     private _initApi: Promise<any>;
 
     initializing = false;
+    map: google.maps.Map;
+    searchBox: google.maps.places.SearchBox;
     placesChanged = new EventEmitter<google.maps.places.PlaceResult[]>();
 
     constructor () {
-        // Use Promise to trigger the real callback when the Google Maps API is ready.
+        // Resolve Google Maps API dependencies with a Promise.
         // http://stackoverflow.com/a/34933503/1070621
         this._initApi = new Promise((resolve, reject) => {
             if (this.initializing) return;
@@ -33,9 +35,6 @@ export class MapService {
         return new Promise((resolve, reject) => {
             this._initApi.then(() => {
                 // Create map with some default options.
-                //
-                // TODO: Disable zoom and street view controls and create custom
-                // controls so that control margins can be consistent.
                 let mapOptions: google.maps.MapOptions = {
                     center: new google.maps.LatLng(37.09024, -95.712891),
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -43,8 +42,8 @@ export class MapService {
                     zoom: 3
                 };
 
-                let map = new google.maps.Map(mapElement, mapOptions);
-                resolve(map);
+                this.map = new google.maps.Map(mapElement, mapOptions);
+                resolve(this.map);
             });
         });
     }
@@ -52,11 +51,11 @@ export class MapService {
     registerSearchBox (searchBoxElement: HTMLInputElement) {
         return new Promise((resolve, reject) => {
             this._initApi.then(() => {
-                let searchBox = new google.maps.places.SearchBox(searchBoxElement);
-                searchBox.addListener("places_changed", () => {
-                    this.placesChanged.emit(searchBox.getPlaces());
+                this.searchBox = new google.maps.places.SearchBox(searchBoxElement);
+                this.searchBox.addListener("places_changed", () => {
+                    this.placesChanged.emit(this.searchBox.getPlaces());
                 });
-                resolve(searchBox);
+                resolve(this.searchBox);
             });
         });
     }

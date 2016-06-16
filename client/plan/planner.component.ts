@@ -53,17 +53,13 @@ import { MapService } from "../map/map.service";
 })
 export class PlannerComponent implements AfterViewInit {
 
-    @ViewChild("searchBox") searchInput: ElementRef;
-
-    searchBox: google.maps.places.SearchBox;
+    @ViewChild("searchBox") searchBox: ElementRef;
 
     constructor (private _mapService: MapService) {
     }
 
     ngAfterViewInit () {
-        this._mapService.registerSearchBox(this.searchInput.nativeElement).then((searchBox: google.maps.places.SearchBox) => {
-            this.searchBox = searchBox;
-        });
+        this._mapService.registerSearchBox(this.searchBox.nativeElement);
     }
 
     goBack () {
