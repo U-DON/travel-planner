@@ -16,7 +16,6 @@ import { SelectionComponent } from "./selection.component";
 @Component({
     selector: "map",
     directives: [SelectionComponent],
-    providers: [MapService],
     styles: [`
         :host {
             flex: 1;
@@ -26,9 +25,6 @@ import { SelectionComponent } from "./selection.component";
         }
     `],
     template: `
-        <form #searchControl id="search-control" class="control">
-            <input #searchBox (keyup.enter)="$event.target.blur()" id="search-box" type="text" />
-        </form>
         <selection
             *ngIf="selection"
             [map]="map"
@@ -36,14 +32,14 @@ import { SelectionComponent } from "./selection.component";
             class="control"
         >
         </selection>
-        <div id="map"></div>
+        <div #mapElement id="map"></div>
     `
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
 
-    @ViewChild("searchControl") searchControl: ElementRef;
-    @ViewChild("searchBox") searchInput: ElementRef;
+    @ViewChild("mapElement") mapElement: ElementRef;
 
+    private _placesChangedSubscription: any;
     private _planAddedSubscription: any;
     private _planSelectedSubscription: any;
     private _planRemovedSubscription: any;
@@ -52,7 +48,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     placeMarkers: Map<string, google.maps.Marker>;
     placesService: google.maps.places.PlacesService;
     planMarkers: Map<string, google.maps.Marker>;
-    searchBox: google.maps.places.SearchBox;
     selectedMarker: google.maps.Marker;
     selection: Plan;
 
@@ -62,6 +57,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     {
         this.placeMarkers = new Map<string, google.maps.Marker>();
         this.planMarkers = new Map<string, google.maps.Marker>();
+
+        this._placesChangedSubscription =
+            this._mapService.placesChanged.subscribe((places: google.maps.places.PlaceResult[]) => {
+                this.updatePlaces(places);
+            });
 
         this._planAddedSubscription =
             this._planService.planAdded.subscribe((plan: Plan) => {
@@ -93,8 +93,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit () {
-        this._mapService.initApi().then(() => {
-            this.initMap();
+        this._mapService.registerMap(this.mapElement.nativeElement).then((map: google.maps.Map) => {
+            this.map = map;
+
+            // Clear search focus, close selection, etc. when clicking on the map.
+            this.map.addListener("click", () => {
+                this.selectMarker(null);
+            });
+
+            this.setToCurrentLocation();
+
+            this.placesService = new google.maps.places.PlacesService(this.map);
+
         });
     }
 
@@ -104,32 +114,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     initMap () {
-        // Upon getting the callback from Google Maps API,
-        // set up the map and controls and their listeners.
-
-        // TODO: Disable zoom and street view controls and create custom
-        // controls so that control margins can be consistent.
-        let mapOptions: google.maps.MapOptions = {
-            center: new google.maps.LatLng(37.09024, -95.712891),
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            mapTypeControl: false,
-            zoom: 3
-        };
-
-        this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-        this.searchBox = new google.maps.places.SearchBox(this.searchInput.nativeElement);
-        this.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.searchControl.nativeElement);
-
-        // Clear search focus, close selection, etc. when clicking on the map.
-        this.map.addListener("click", () => {
-            this.selectMarker(null);
-        });
-
-        this.searchBox.addListener("places_changed", this.onPlacesChanged.bind(this));
-
-        this.placesService = new google.maps.places.PlacesService(this.map);
-
-        this.setToCurrentLocation();
     }
 
     setToCurrentLocation () {
@@ -282,8 +266,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     selectMarker (marker: google.maps.Marker) {
-        this.searchInput.nativeElement.blur();
-
         // TODO: Pan to the marker if it's off-screen.
         if (marker === this.selectedMarker) return;
 
@@ -310,8 +292,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-    onPlacesChanged () {
-        let places: google.maps.places.PlaceResult[] = this.searchBox.getPlaces();
+    updatePlaces (places: google.maps.places.PlaceResult[]) {
         if (places.length === 0) return;
 
         this.clearPlaceMarkers();

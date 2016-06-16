@@ -6,11 +6,12 @@ import { SearchResultsComponent } from "./plan/search-results.component";
 import { PlanService } from "./plan/plan.service";
 import { PlannerComponent } from "./plan/planner.component";
 import { MapComponent } from "./map/map.component";
+import { MapService } from "./map/map.service";
 
 @Component({
     selector: "app",
     directives: [PlannerComponent, MapComponent],
-    providers: [ROUTER_PROVIDERS, PlanService],
+    providers: [ROUTER_PROVIDERS, PlanService, MapService],
     styles: [`
         :host {
             display: flex;

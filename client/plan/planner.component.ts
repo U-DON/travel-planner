@@ -1,8 +1,13 @@
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     Component,
+    ElementRef,
+    ViewChild
 } from "@angular/core";
 import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "@angular/router-deprecated";
+
+import { MapService } from "../map/map.service";
 
 @Component({
     selector: "planner",
@@ -33,12 +38,12 @@ import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "@angular/route
         </nav>
         <div id="view-input-wrapper">
             <div id="view-input">
-                <input type="text" placeholder="Where do you want to go?" />
+                <input #searchBox type="text" placeholder="Where do you want to go?" />
                 <i class="fa fa-lg fa-close"></i>
                 <i class="fa fa fa-search"></i>
             </div>
         </div>
-        <a (click)="$event.preventDefault(); goBack();" id="back" href="#back">
+        <a (click)="goBack();" id="back" href>
             <i class="fa fa-lg fa-long-arrow-left"></i>&nbsp;&nbsp; Back To Search Results
         </a>
         <plan-list></plan-list>
@@ -46,9 +51,24 @@ import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "@angular/route
         <router-outlet></router-outlet>
     `
 })
-export class PlannerComponent {
+export class PlannerComponent implements AfterViewInit {
+
+    @ViewChild("searchBox") searchInput: ElementRef;
+
+    searchBox: google.maps.places.SearchBox;
+
+    constructor (private _mapService: MapService) {
+    }
+
+    ngAfterViewInit () {
+        this._mapService.registerSearchBox(this.searchInput.nativeElement).then((searchBox: google.maps.places.SearchBox) => {
+            this.searchBox = searchBox;
+        });
+    }
 
     goBack () {
+        // Should go back to plan list or search results,
+        // depending on which was active.
         window.history.back();
     }
 
