@@ -18,7 +18,7 @@ import { MapService } from "../map/map.service";
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.25);
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            height: 100%;
             position: relative;
             width: 480px;
             z-index: 1;
@@ -51,8 +51,6 @@ import { MapService } from "../map/map.service";
         <a (click)="goBack();" id="back" href>
             <i class="fa fa-lg fa-long-arrow-left"></i>&nbsp;&nbsp; Back To Search Results
         </a>
-        <plan-list></plan-list>
-        <search-results></search-results>
         <router-outlet></router-outlet>
     `
 })

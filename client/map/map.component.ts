@@ -59,7 +59,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.planMarkers = new Map<string, google.maps.Marker>();
 
         this._placesChangedSubscription =
-            this._mapService.placesChanged.subscribe((places: google.maps.places.PlaceResult[]) => {
+            this._mapService.searchResults$.subscribe((places: google.maps.places.PlaceResult[]) => {
                 this.updatePlaces(places);
             });
 
@@ -93,6 +93,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit () {
+        this.initMap();
+    }
+
+    ngOnDestroy () {
+        this._placesChangedSubscription.unsubscribe();
+        this._planAddedSubscription.unsubscribe();
+        this._planRemovedSubscription.unsubscribe();
+    }
+
+    initMap () {
         this._mapService.registerMap(this.mapElement.nativeElement).then((map: google.maps.Map) => {
             this.map = map;
 
@@ -104,16 +114,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             this.setToCurrentLocation();
 
             this.placesService = new google.maps.places.PlacesService(this.map);
-
         });
-    }
-
-    ngOnDestroy () {
-        this._planAddedSubscription.unsubscribe();
-        this._planRemovedSubscription.unsubscribe();
-    }
-
-    initMap () {
     }
 
     setToCurrentLocation () {

@@ -1,4 +1,6 @@
-import { EventEmitter, Injectable } from "@angular/core";
+import { EventEmitter, Injectable, NgZone } from "@angular/core";
+
+import { BehaviorSubject, Subject } from "rxjs";
 
 const url = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBm-W3Z_sdpUKMYz7iv8vxCFGAw5BRGKSE&v=3&libraries=places&callback=_onApiLoaded"
 
@@ -6,13 +8,16 @@ const url = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBm-W3Z_sdpUKMYz7i
 export class MapService {
 
     private _initApi: Promise<any>;
+    private _searchResults$ = new BehaviorSubject([]);
+    private _dataStore: {
+        searchResults: google.maps.places.PlaceResult[]
+    };
 
     initializing = false;
     map: google.maps.Map;
     searchBox: google.maps.places.SearchBox;
-    placesChanged = new EventEmitter<google.maps.places.PlaceResult[]>();
 
-    constructor () {
+    constructor (private _zone: NgZone) {
         // Resolve Google Maps API dependencies with a Promise.
         // http://stackoverflow.com/a/34933503/1070621
         this._initApi = new Promise((resolve, reject) => {
@@ -28,6 +33,12 @@ export class MapService {
             script.type = "text/javascript";
             script.src = url;
             document.getElementsByTagName("head")[0].appendChild(script);
+        });
+
+        this._initApi.then(() => {
+            this._dataStore = {
+                searchResults: []
+            };
         });
     }
 
@@ -52,11 +63,20 @@ export class MapService {
         return new Promise((resolve, reject) => {
             this._initApi.then(() => {
                 this.searchBox = new google.maps.places.SearchBox(searchBoxElement);
-                this.searchBox.addListener("places_changed", () => {
-                    this.placesChanged.emit(this.searchBox.getPlaces());
-                });
+                this.searchBox.addListener("places_changed", this.updateSearchResults.bind(this));
                 resolve(this.searchBox);
             });
+        });
+    }
+
+    get searchResults$ () {
+        return this._searchResults$.asObservable();
+    }
+
+    updateSearchResults () {
+        this._zone.run(() => {
+            this._dataStore.searchResults = this.searchBox.getPlaces();
+            this._searchResults$.next(this._dataStore.searchResults);
         });
     }
 

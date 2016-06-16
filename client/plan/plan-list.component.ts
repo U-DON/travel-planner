@@ -18,6 +18,7 @@ import { PlanComponent } from "./plan.component";
     styles: [`
         :host {
             flex: 1;
+            overflow: auto;
         }
     `],
     template: `

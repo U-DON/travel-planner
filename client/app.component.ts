@@ -15,7 +15,7 @@ import { MapService } from "./map/map.service";
     styles: [`
         :host {
             display: flex;
-            flex-direction: row; // Flip for vertical screens?
+            flex-direction: row;
             height: 100vh;
             margin: 0;
             padding: 0;

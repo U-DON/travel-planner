@@ -30,8 +30,6 @@
 #plan-list
 {
     background: #fefefe;
-    height: 100%;
-    overflow: auto;
 
     & .plan-detail-group
     {
@@ -50,8 +48,7 @@
 #search-results
 {
     background: #fefefe;
-    height: 100%;
-    overflow: auto;
+    min-height: 100%;
 }
 
 #view-tabs
