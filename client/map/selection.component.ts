@@ -58,7 +58,6 @@ enum SelectionSection {
                 </div>
                 <div id="selection-section-tabs">
                     <div
-                        *ngIf="plan.place.reviews"
                         (click)="currentSection = selectionSection.REVIEWS"
                         [class.selected-tab]="currentSection == selectionSection.REVIEWS"
                         class="selection-section-tab"
