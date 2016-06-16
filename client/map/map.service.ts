@@ -9,9 +9,6 @@ export class MapService {
 
     private _initApi: Promise<any>;
     private _searchResults$ = new BehaviorSubject([]);
-    private _dataStore: {
-        searchResults: google.maps.places.PlaceResult[]
-    };
 
     initializing = false;
     map: google.maps.Map;
@@ -33,12 +30,6 @@ export class MapService {
             script.type = "text/javascript";
             script.src = url;
             document.getElementsByTagName("head")[0].appendChild(script);
-        });
-
-        this._initApi.then(() => {
-            this._dataStore = {
-                searchResults: []
-            };
         });
     }
 
@@ -75,8 +66,7 @@ export class MapService {
 
     updateSearchResults () {
         this._zone.run(() => {
-            this._dataStore.searchResults = this.searchBox.getPlaces();
-            this._searchResults$.next(this._dataStore.searchResults);
+            this._searchResults$.next(this.searchBox.getPlaces());
         });
     }
 
