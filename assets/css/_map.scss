@@ -59,12 +59,18 @@
 {
     & .plan-summary
     {
-        margin-bottom: 1.5em;
+        margin: 1em 0 2.5em 0;
+
+        & .plan-detail
+        {
+            margin-top: 0;
+        }
     }
 
     & .plan-detail
     {
         line-height: 1.5;
+        margin-top: 1.5em;
     }
 
     & .plan-detail-label

@@ -27,30 +27,6 @@
     }
 }
 
-#plan-list
-{
-    background: #fefefe;
-
-    & .plan-detail-group
-    {
-        & .plan-detail
-        {
-            margin: 0;
-
-            & + .plan-detail
-            {
-                margin-left: 2em;
-            }
-        }
-    }
-}
-
-#search-results
-{
-    background: #fefefe;
-    min-height: 100%;
-}
-
 #view-tabs
 {
     align-items: center;
@@ -87,6 +63,7 @@
     background: #f9f9f9;
     border: 1px solid #dddddd;
     display: flex;
+    margin: 0;
 
     & > input
     {
@@ -125,45 +102,15 @@
 
 #back
 {
-    background: #444;
-    color: #fff;
+    background: #444444;
+    color: #ffffff;
+    display: none;
     padding: 1em;
     text-align: center;
 
     &:hover
     {
-        background: #666;
-    }
-}
-
-.plan
-{
-    display: block;
-    padding: 2em;
-
-    &:hover
-    {
-        border-right: 4px solid $blue;
-    }
-
-    & .plan-summary
-    {
-        margin: 2em auto;
-    }
-
-    & .plan-delete
-    {
-        padding: 10px;
-    }
-
-    & + .plan
-    {
-        border-top: 1px solid #f0f0f0;
-    }
-
-    button
-    {
-        border: 0;
+        background: #666666;
     }
 }
 
@@ -182,17 +129,11 @@
 {
     display: flex;
     align-items: center;
-
-    & .plan-detail
-    {
-        margin: 1em 0;
-    }
 }
 
 .plan-detail
 {
     display: flex;
-    margin-top: 1.5em;
 }
 
 .plan-detail-label
@@ -213,6 +154,51 @@
 
 #plan-list
 {
+    background: #fefefe;
+    min-height: 100%;
+
+    .plan
+    {
+        display: block;
+        padding: 2em;
+
+        &:hover
+        {
+            border-right: 4px solid $blue;
+        }
+
+        .plan-summary
+        {
+            margin: 2em auto;
+        }
+
+        .plan-delete
+        {
+            padding: 10px;
+        }
+
+        & + .plan
+        {
+            border-top: 1px solid #f0f0f0;
+        }
+
+        button
+        {
+            border: 0;
+        }
+    }
+
+    .plan-detail-group
+    {
+        .plan-detail
+        {
+            & + .plan-detail
+            {
+                margin-left: 2em;
+            }
+        }
+    }
+
     .plan-description
     {
         textarea
@@ -285,6 +271,40 @@
     }
 }
 
+/******************
+ * Search Results *
+ ******************/
+
+#search-results
+{
+    background: #fefefe;
+    min-height: 100%;
+
+    .plan-detail-group
+    {
+        margin: 1em 0;
+
+        .plan-detail
+        {
+            margin-top: 0;
+        }
+    }
+
+    .plan-detail
+    {
+        margin-top: 1em;
+    }
+
+    & > .search-result
+    {
+        padding: 2em;
+
+        & + .search-result
+        {
+            border-top: 1px solid #f0f0f0;
+        }
+    }
+}
 /******************
  * Plan Selection *
  ******************/
