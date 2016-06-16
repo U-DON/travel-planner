@@ -246,6 +246,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (this.planMarkers.has(plan.place.placeId)) return;
 
         let marker = this.createMarker(MapMarker.STAR, plan);
+        // Marker is created from an existing place marker that must have
+        // already queried its place details.
+        marker.set("detailed", true);
         this.planMarkers.set(plan.place.placeId, marker);
 
         this.selectMarker(marker);
@@ -292,7 +295,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     fetchPlaceDetails (marker: google.maps.Marker) {
         return new Promise((resolve, reject) => {
-            if (!marker) {
+            // No need to populate place details if it's a null marker or
+            // this marker has already queried its place details.
+            if (!marker || marker.get("detailed")) {
                 resolve();
                 return;
             }
