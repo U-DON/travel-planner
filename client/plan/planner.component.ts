@@ -37,11 +37,16 @@ import { MapService } from "../map/map.service";
             </a>
         </nav>
         <div id="view-input-wrapper">
-            <div id="view-input">
-                <input #searchBox type="text" placeholder="Where do you want to go?" />
-                <i class="fa fa-lg fa-close"></i>
-                <i class="fa fa fa-search"></i>
-            </div>
+            <form #searchForm (submit)="$event.preventDefault();" id="view-input">
+                <input
+                    #searchBox
+                    (keyup.enter)="$event.target.blur();"
+                    type="text"
+                    placeholder="Where do you want to go?"
+                />
+                <a (click)="clearSearch($event);" tabindex="0"><i class="fa fa-lg fa-close"></i></a>
+                <a (click)="submitSearch($event);" tabindex="0"><i class="fa fa fa-search"></i></a>
+            </form>
         </div>
         <a (click)="goBack();" id="back" href>
             <i class="fa fa-lg fa-long-arrow-left"></i>&nbsp;&nbsp; Back To Search Results
@@ -60,6 +65,23 @@ export class PlannerComponent implements AfterViewInit {
 
     ngAfterViewInit () {
         this._mapService.registerSearchBox(this.searchBox.nativeElement);
+    }
+
+    submitSearch (event: Event) {
+        event.preventDefault();
+
+        // Listeners for search box are bound on focus and removed on blur.
+        // http://stackoverflow.com/a/20759063/1070621
+        google.maps.event.trigger(this.searchBox.nativeElement, "focus");
+        google.maps.event.trigger(this.searchBox.nativeElement,
+                                  "keydown",
+                                  { keyCode: 13 });
+    }
+
+    clearSearch (event: Event) {
+        event.preventDefault();
+        this.searchBox.nativeElement.value = null;
+        this.searchBox.nativeElement.focus();
     }
 
     goBack () {

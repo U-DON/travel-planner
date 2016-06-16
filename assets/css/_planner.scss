@@ -91,7 +91,7 @@
     border: 1px solid #dddddd;
     display: flex;
 
-    & input
+    & > input
     {
         background: transparent;
         border: 0;
@@ -99,7 +99,7 @@
         padding: 1em;
     }
 
-    & i
+    & > a
     {
         color: #cccccc;
         cursor: pointer;
