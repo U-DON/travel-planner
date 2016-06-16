@@ -37,7 +37,7 @@ import { MapService } from "../map/map.service";
             </a>
         </nav>
         <div id="view-input-wrapper">
-            <form #searchForm (submit)="$event.preventDefault();" id="view-input">
+            <form (submit)="$event.preventDefault();" id="view-input">
                 <input
                     #searchBox
                     (keyup.enter)="$event.target.blur();"

@@ -12,7 +12,6 @@ import {
     Renderer
 } from "@angular/core";
 
-import { CurrencyPipe, RatingPipe } from "./pipes";
 import { Plan } from "./plan";
 import { PlanService } from "./plan.service";
 
@@ -53,7 +52,6 @@ class PlanDescription {
     selector: "plan",
     changeDetection: ChangeDetectionStrategy.OnPush,
     directives: [PlanDescription],
-    pipes: [CurrencyPipe, RatingPipe],
     template: `
         <div class="plan-place">
             <a
