@@ -43,6 +43,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     private _planAddedSubscription: any;
     private _planSelectedSubscription: any;
     private _planRemovedSubscription: any;
+    private _searchResultFocusedSubscription: any;
+    private _searchResultUnfocusedSubscription: any;
 
     map: google.maps.Map;
     placeMarkers: Map<string, google.maps.Marker>;
@@ -90,6 +92,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                     this.createTempMarker(MapMarker.TACK, plan);
                 }
             });
+
+        this._searchResultFocusedSubscription =
+            this._mapService.searchResultFocused.subscribe((placeId: string) => {
+                let marker = this.placeMarkers.get(placeId);
+                if (marker !== this.selectedMarker) {
+                    marker.set("focused", true);
+                }
+            });
+
+        this._searchResultUnfocusedSubscription =
+            this._mapService.searchResultUnfocused.subscribe((placeId: string) => {
+                let marker = this.placeMarkers.get(placeId);
+                if (marker !== this.selectedMarker) {
+                    marker.set("focused", false);
+                }
+            });
     }
 
     ngAfterViewInit () {
@@ -101,6 +119,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this._planAddedSubscription.unsubscribe();
         this._planSelectedSubscription.unsubscribe();
         this._planRemovedSubscription.unsubscribe();
+        this._searchResultFocusedSubscription.unsubscribe();
+        this._searchResultUnfocusedSubscription.unsubscribe();
     }
 
     initMap () {
@@ -182,15 +202,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         });
 
         marker.addListener("mouseover", () => {
-            if (marker !== this.selectedMarker) {
-                marker.set("focused", true);
-            }
+            this._mapService.searchResultFocused.emit(plan.place.placeId);
         });
 
         marker.addListener("mouseout", () => {
-            if (marker !== this.selectedMarker) {
-                marker.set("focused", false);
-            }
+            this._mapService.searchResultUnfocused.emit(plan.place.placeId);
         });
 
         marker.addListener("focused_changed", () => {

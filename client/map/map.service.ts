@@ -13,6 +13,8 @@ export class MapService {
     initializing = false;
     map: google.maps.Map;
     searchBox: google.maps.places.SearchBox;
+    searchResultFocused = new EventEmitter<string>();
+    searchResultUnfocused = new EventEmitter<string>();
 
     constructor (private _zone: NgZone) {
         // Resolve Google Maps API dependencies with a Promise.

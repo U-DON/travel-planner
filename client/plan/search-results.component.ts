@@ -1,6 +1,8 @@
 import {
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
+    OnDestroy
 } from "@angular/core";
 
 import { Observable } from "rxjs/Observable";
@@ -20,7 +22,13 @@ import { CurrencyPipe, RatingPipe } from "./pipes";
     `],
     template: `
         <div id="search-results">
-            <div *ngFor="let result of searchResults | async" class="search-result">
+            <div
+                *ngFor="let result of searchResults | async"
+                (mouseover)="_mapService.searchResultFocused.emit(result.place_id)"
+                (mouseout)="_mapService.searchResultUnfocused.emit(result.place_id)"
+                [class.selected]="selectedResult === result.place_id"
+                class="search-result"
+            >
                 <div class="plan-place">{{ result.name }}</div>
                 <div class="plan-summary">
                     <div *ngIf="result.rating || result.priceLevel" class="plan-detail-group">
@@ -36,11 +44,35 @@ import { CurrencyPipe, RatingPipe } from "./pipes";
 export class SearchResultsComponent {
 
     searchResults: Observable<google.maps.places.PlaceResult[]>;
+    selectedResult: string = null;
 
-    constructor (private _mapService: MapService) {}
+    private _searchResultFocusedSubscription: any;
+    private _searchResultUnfocusedSubscription: any;
+
+    constructor (private _changeDetector: ChangeDetectorRef,
+                 private _mapService: MapService)
+    {
+    }
 
     ngOnInit () {
         this.searchResults = this._mapService.searchResults$;
+
+        this._searchResultFocusedSubscription =
+            this._mapService.searchResultFocused.subscribe((placeId: string) => {
+                this.selectedResult = placeId;
+                this._changeDetector.markForCheck();
+            });
+
+        this._searchResultUnfocusedSubscription =
+            this._mapService.searchResultUnfocused.subscribe((placeId: string) => {
+                this.selectedResult = null;
+                this._changeDetector.markForCheck();
+            });
+    }
+
+    ngOnDestroy () {
+        this._searchResultFocusedSubscription.unsubscribe();
+        this._searchResultUnfocusedSubscription.unsubscribe();
     }
 
 }

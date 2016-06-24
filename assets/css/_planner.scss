@@ -304,6 +304,11 @@
     {
         padding: 2em;
 
+        &.selected
+        {
+            background: #f9f9f9;
+        }
+
         & + .search-result
         {
             border-top: 1px solid #f0f0f0;

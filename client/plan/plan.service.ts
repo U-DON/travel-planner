@@ -12,12 +12,6 @@ export class PlanService {
         plans: Map<string, Plan>
     };
 
-    constructor () {
-        this._dataStore = {
-            plans: new Map<string, Plan>()
-        };
-    }
-
     // Use observables to relay data between Planner and Map components.
     // http://stackoverflow.com/a/34714574/1070621
     // http://stackoverflow.com/a/34722345/1070621
@@ -26,6 +20,12 @@ export class PlanService {
     planRemoved = new EventEmitter<Plan>();
     planSelected = new EventEmitter<Plan>();
     planUpdated = new EventEmitter<Plan>();
+
+    constructor () {
+        this._dataStore = {
+            plans: new Map<string, Plan>()
+        };
+    }
 
     get plans$ () {
         return this._plans$.asObservable();
