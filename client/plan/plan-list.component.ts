@@ -3,7 +3,7 @@ import {
     Component,
 } from "@angular/core";
 
-import { Observable } from "rxjs";
+import { Observable } from "rxjs/Observable";
 
 import { MapValuesPipe } from "../common/map-values.pipe";
 import { Plan } from "./plan";

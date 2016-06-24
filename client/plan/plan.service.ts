@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from "@angular/core";
 
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
 
 import { Plan, PlanStatus } from "./plan";
 

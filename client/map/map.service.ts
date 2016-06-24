@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable, NgZone } from "@angular/core";
 
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
 
 const url = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBm-W3Z_sdpUKMYz7iv8vxCFGAw5BRGKSE&v=3&libraries=places&callback=_onApiLoaded"
 
