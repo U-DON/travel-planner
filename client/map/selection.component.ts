@@ -58,8 +58,8 @@ enum SelectionSection {
                 </div>
                 <div id="selection-section-tabs">
                     <div
-                        (click)="currentSection = selectionSection.REVIEWS"
-                        [class.selected-tab]="currentSection == selectionSection.REVIEWS"
+                        (click)="currentSection = selectionSection.REVIEWS;"
+                        [class.selected]="currentSection === selectionSection.REVIEWS"
                         class="selection-section-tab"
                     >
                         <i class="fa fa-lg fa-star"></i>
@@ -67,8 +67,8 @@ enum SelectionSection {
                     </div>
                     <div
                         *ngIf="plan.status"
-                        (click)="currentSection = selectionSection.COMMENTS"
-                        [class.selected-tab]="currentSection == selectionSection.COMMENTS"
+                        (click)="currentSection = selectionSection.COMMENTS;"
+                        [class.selected]="currentSection === selectionSection.COMMENTS"
                         class="selection-section-tab"
                     >
                         <i class="fa fa-lg fa-comments"></i>
@@ -76,8 +76,8 @@ enum SelectionSection {
                     </div>
                 </div>
                 <div id="selection-sections">
-                    <reviews *ngIf="currentSection == selectionSection.REVIEWS" [plan]="plan"></reviews>
-                    <comments *ngIf="currentSection == selectionSection.COMMENTS" [plan]="plan"></comments>
+                    <reviews *ngIf="currentSection === selectionSection.REVIEWS" [plan]="plan"></reviews>
+                    <comments *ngIf="currentSection === selectionSection.COMMENTS" [plan]="plan"></comments>
                 </div>
             </div>
             <button

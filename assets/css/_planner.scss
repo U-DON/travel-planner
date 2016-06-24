@@ -182,11 +182,6 @@
         display: block;
         padding: 2em;
 
-        &:hover
-        {
-            border-right: 4px solid $blue;
-        }
-
         & + .plan
         {
             border-top: 1px solid #f0f0f0;
