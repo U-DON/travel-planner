@@ -13,6 +13,7 @@ export class MapService {
     initializing = false;
     map: google.maps.Map;
     searchBox: google.maps.places.SearchBox;
+    searchResultSelected = new EventEmitter<string>();
     searchResultFocused = new EventEmitter<string>();
     searchResultUnfocused = new EventEmitter<string>();
 

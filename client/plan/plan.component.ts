@@ -56,6 +56,8 @@ class PlanDescription {
         <div class="plan-place">
             <a
                 (click)="$event.preventDefault(); _planService.selectPlan(plan);"
+                (mouseover)="_planService.planFocused.emit(plan)"
+                (mouseout)="_planService.planUnfocused.emit(plan)"
                 href="#{{ plan.place.placeId }}"
             >
                 {{ plan.place.name }}

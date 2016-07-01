@@ -24,6 +24,7 @@ import { CurrencyPipe, RatingPipe } from "./pipes";
         <div id="search-results">
             <div
                 *ngFor="let result of searchResults | async"
+                (click)="_mapService.searchResultSelected.emit(result.place_id);"
                 (mouseover)="_mapService.searchResultFocused.emit(result.place_id)"
                 (mouseout)="_mapService.searchResultUnfocused.emit(result.place_id)"
                 [class.selected]="selectedResult === result.place_id"

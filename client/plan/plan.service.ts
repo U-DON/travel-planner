@@ -20,6 +20,8 @@ export class PlanService {
     planRemoved = new EventEmitter<Plan>();
     planSelected = new EventEmitter<Plan>();
     planUpdated = new EventEmitter<Plan>();
+    planFocused = new EventEmitter<Plan>();
+    planUnfocused = new EventEmitter<Plan>();
 
     constructor () {
         this._dataStore = {

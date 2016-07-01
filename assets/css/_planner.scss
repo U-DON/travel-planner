@@ -114,7 +114,7 @@
 #view-input
 {
     align-items: center;
-    background: #f9f9f9;
+    background: #fefefe;
     border: 1px solid #dddddd;
     display: flex;
     margin: 0;
@@ -297,6 +297,7 @@
 
     & > .search-result
     {
+        cursor: pointer;
         padding: 2em;
 
         &.selected

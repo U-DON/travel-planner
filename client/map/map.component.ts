@@ -43,6 +43,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     private _planAddedSubscription: any;
     private _planSelectedSubscription: any;
     private _planRemovedSubscription: any;
+    private _planFocusedSubscription: any;
+    private _planUnfocusedSubscription: any;
+    private _searchResultSelectedSubscription: any;
     private _searchResultFocusedSubscription: any;
     private _searchResultUnfocusedSubscription: any;
 
@@ -93,6 +96,30 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                 }
             });
 
+        this._planFocusedSubscription =
+            this._planService.planFocused.subscribe((plan: Plan) => {
+                let marker = this.planMarkers.get(plan.place.placeId);
+                if (marker !== this.selectedMarker) {
+                    marker.set("focused", true);
+                }
+            });
+
+        this._planUnfocusedSubscription =
+            this._planService.planUnfocused.subscribe((plan: Plan) => {
+                let marker = this.planMarkers.get(plan.place.placeId);
+                if (marker !== this.selectedMarker) {
+                    marker.set("focused", false);
+                }
+            });
+
+        this._searchResultSelectedSubscription =
+            this._mapService.searchResultSelected.subscribe((placeId: string) => {
+                let marker = this.placeMarkers.get(placeId);
+                if (marker !== this.selectedMarker) {
+                    this.selectMarker(marker);
+                }
+            });
+
         this._searchResultFocusedSubscription =
             this._mapService.searchResultFocused.subscribe((placeId: string) => {
                 let marker = this.placeMarkers.get(placeId);
@@ -119,6 +146,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this._planAddedSubscription.unsubscribe();
         this._planSelectedSubscription.unsubscribe();
         this._planRemovedSubscription.unsubscribe();
+        this._planFocusedSubscription.unsubscribe();
+        this._planUnfocusedSubscription.unsubscribe();
+        this._searchResultSelectedSubscription.unsubscribe();
         this._searchResultFocusedSubscription.unsubscribe();
         this._searchResultUnfocusedSubscription.unsubscribe();
     }
@@ -169,9 +199,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         console.log("Creating marker: " + position.toUrlValue() + " (URL value)\n"
                                         + plan.place.placeId + " (place id)");
 
-        let animation = (icon.markerType === MapMarker.Type.PLAN)
-                      ? google.maps.Animation.DROP
-                      : null;
+        let isPlan = icon.markerType === MapMarker.Type.PLAN;
+        let animation = isPlan ? google.maps.Animation.DROP : null;
 
         // Set an anchor calculated from icon's width to correct its position.
         // Moving it horizontally by half its width should center it.
@@ -201,13 +230,23 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             this.selectMarker(marker);
         });
 
-        marker.addListener("mouseover", () => {
-            this._mapService.searchResultFocused.emit(plan.place.placeId);
-        });
+        if (isPlan) {
+            marker.addListener("mouseover", () => {
+                this._planService.planFocused.emit(plan);
+            });
 
-        marker.addListener("mouseout", () => {
-            this._mapService.searchResultUnfocused.emit(plan.place.placeId);
-        });
+            marker.addListener("mouseout", () => {
+                this._planService.planUnfocused.emit(plan);
+            });
+        } else {
+            marker.addListener("mouseover", () => {
+                this._mapService.searchResultFocused.emit(plan.place.placeId);
+            });
+
+            marker.addListener("mouseout", () => {
+                this._mapService.searchResultUnfocused.emit(plan.place.placeId);
+            });
+        }
 
         marker.addListener("focused_changed", () => {
             if (marker.get("focused")) {
